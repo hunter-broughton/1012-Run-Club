@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Oswald:wght@200;300;400;500;600;700&family=Bebas+Neue&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -8,35 +9,11 @@
   --michigan-blue: #00274c;
   --michigan-blue-light: #0066cc;
   --michigan-maize-light: #ffd966;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-roboto), system-ui, sans-serif;
-  --font-display: var(--font-roboto), system-ui, sans-serif;
-
-  /* Custom Michigan colors */
-  --color-michigan-maize: var(--michigan-maize);
-  --color-michigan-blue: var(--michigan-blue);
-  --color-michigan-blue-light: var(--michigan-blue-light);
-  --color-michigan-maize-light: var(--michigan-maize-light);
-
-  /* Update primary colors to use Michigan colors */
-  --color-primary-50: #f0f8ff;
-  --color-primary-100: #e0f2fe;
-  --color-primary-200: #bae6fd;
-  --color-primary-300: #7dd3fc;
-  --color-primary-400: #38bdf8;
-  --color-primary-500: var(--michigan-blue-light);
-  --color-primary-600: var(--michigan-blue);
-  --color-primary-700: #1e40af;
-  --color-primary-800: #1e3a8a;
-  --color-primary-900: #1e293b;
-
-  --color-yellow-400: var(--michigan-maize);
-  --color-yellow-500: var(--michigan-maize);
-  --color-yellow-600: #e6b800;
+  /* Font definitions */
+  --font-sans: "Rajdhani", system-ui, sans-serif;
+  --font-display: "Bebas Neue", "Oswald", system-ui, sans-serif;
+  --font-tech: "Orbitron", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -49,21 +26,82 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-roboto), system-ui, sans-serif;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-weight: 400;
 }
 
-/* Typography improvements */
+/* Athletic Typography System */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-roboto), system-ui, sans-serif;
-  font-weight: 700;
-  line-height: 1.2;
+  font-family: "Bebas Neue", "Oswald", system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
+/* Mega headings for impact */
+h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 4px rgba(0, 39, 76, 0.3);
+}
+
+/* Display class for hero text */
 .font-display {
-  font-family: var(--font-roboto), system-ui, sans-serif;
+  font-family: "Bebas Neue", "Oswald", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Tech/modern font for data and numbers */
+.font-tech {
+  font-family: "Orbitron", monospace;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Athletic body text */
+.font-athletic {
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Impact text for CTAs and important elements */
+.font-impact {
+  font-family: "Oswald", sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Text effects for energy */
+.text-glow-maize {
+  text-shadow: 0 0 10px rgba(255, 203, 5, 0.5), 0 0 20px rgba(255, 203, 5, 0.3);
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 10px rgba(0, 39, 76, 0.5), 0 0 20px rgba(0, 39, 76, 0.3);
+}
+
+/* Energetic animations */
+.text-pulse {
+  animation: textPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes textPulse {
+  from {
+    text-shadow: 0 0 5px rgba(255, 203, 5, 0.5);
+  }
+  to {
+    text-shadow: 0 0 15px rgba(255, 203, 5, 0.8),
+      0 0 25px rgba(255, 203, 5, 0.4);
+  }
 }

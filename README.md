@@ -49,15 +49,6 @@ website/
 └── next.config.ts
 ```
 
-## Features
-
-- 🏃‍♀️ Modern, responsive design
-- 📱 Mobile-first approach
-- ⚡ Fast loading with Next.js
-- 🎨 Beautiful UI with Tailwind CSS
-- 🔧 TypeScript for type safety
-- 📦 Component-based architecture
-
 ## Development
 
 - `npm run dev` - Start development server

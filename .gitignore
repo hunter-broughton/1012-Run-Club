@@ -96,7 +96,8 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
-data/
+/data/
+/website/data/
 
 # IDE
 .vscode/
