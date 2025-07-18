@@ -24,13 +24,49 @@ interface Registration {
   ipAddress: string;
 }
 
+interface RoutePoint {
+  lat: number;
+  lng: number;
+  name?: string;
+}
+
+interface RunRoute {
+  id?: number;
+  name: string;
+  description: string;
+  distance: string;
+  difficulty: "Easy" | "Moderate" | "Hard";
+  estimatedTime: string;
+  points: RoutePoint[];
+  isUpcoming?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export default function AdminDashboard() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
+  const [routes, setRoutes] = useState<RunRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"registrations" | "routes">(
+    "registrations"
+  );
+  const [showRouteForm, setShowRouteForm] = useState(false);
+  const [editingRoute, setEditingRoute] = useState<RunRoute | null>(null);
+  const [routeForm, setRouteForm] = useState<
+    Omit<RunRoute, "id" | "createdAt" | "updatedAt">
+  >({
+    name: "",
+    description: "",
+    distance: "",
+    difficulty: "Easy",
+    estimatedTime: "",
+    points: [],
+    isUpcoming: false,
+  });
 
   // Simple password protection (in production, use proper authentication)
   const handleLogin = (e: React.FormEvent) => {
@@ -39,6 +75,7 @@ export default function AdminDashboard() {
       // Change this to a secure password
       setIsAuthenticated(true);
       fetchRegistrations();
+      fetchRoutes();
     } else {
       setError("Invalid password");
     }
@@ -100,6 +137,168 @@ export default function AdminDashboard() {
     } finally {
       setExporting(false);
     }
+  };
+
+  const fetchRoutes = async () => {
+    try {
+      const response = await fetch("/api/routes");
+      if (!response.ok) {
+        throw new Error("Failed to fetch routes");
+      }
+      const routesData = await response.json();
+      setRoutes(routesData);
+    } catch (err) {
+      setError("Failed to load routes");
+      console.error(err);
+    }
+  };
+
+  const handleRouteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate that at least one route point is provided
+    if (routeForm.points.length === 0) {
+      setError("At least one route point is required");
+      return;
+    }
+
+    // Validate that all route points have valid coordinates
+    const invalidPoints = routeForm.points.some(
+      (point) =>
+        isNaN(point.lat) ||
+        isNaN(point.lng) ||
+        point.lat === 0 ||
+        point.lng === 0
+    );
+
+    if (invalidPoints) {
+      setError(
+        "All route points must have valid latitude and longitude coordinates"
+      );
+      return;
+    }
+
+    try {
+      const method = editingRoute ? "PUT" : "POST";
+      const url = editingRoute
+        ? `/api/routes?id=${editingRoute.id}`
+        : "/api/routes";
+
+      console.log("Submitting route:", { method, url, routeForm });
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(routeForm),
+      });
+
+      console.log("Response status:", response.status);
+      const responseData = await response.json();
+      console.log("Response data:", responseData);
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.details ||
+            responseData.error ||
+            `Failed to ${editingRoute ? "update" : "create"} route`
+        );
+      }
+
+      await fetchRoutes();
+      setShowRouteForm(false);
+      setEditingRoute(null);
+      setRouteForm({
+        name: "",
+        description: "",
+        distance: "",
+        difficulty: "Easy",
+        estimatedTime: "",
+        points: [],
+        isUpcoming: false,
+      });
+      setError(null); // Clear any previous errors
+    } catch (err) {
+      console.error("Route submit error:", err);
+      setError(
+        `Failed to ${editingRoute ? "update" : "create"} route: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    }
+  };
+
+  const handleDeleteRoute = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this route?")) return;
+
+    try {
+      const response = await fetch(`/api/routes?id=${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete route");
+      }
+
+      await fetchRoutes();
+    } catch (err) {
+      setError("Failed to delete route");
+      console.error(err);
+    }
+  };
+
+  const handleSetUpcoming = async (id: number) => {
+    try {
+      const response = await fetch(`/api/routes?id=${id}&action=set-upcoming`, {
+        method: "PUT",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to set upcoming route");
+      }
+
+      await fetchRoutes();
+    } catch (err) {
+      setError("Failed to set upcoming route");
+      console.error(err);
+    }
+  };
+
+  const handleEditRoute = (route: RunRoute) => {
+    setEditingRoute(route);
+    setRouteForm({
+      name: route.name,
+      description: route.description,
+      distance: route.distance,
+      difficulty: route.difficulty,
+      estimatedTime: route.estimatedTime,
+      points: route.points,
+      isUpcoming: route.isUpcoming || false,
+    });
+    setShowRouteForm(true);
+  };
+
+  const addRoutePoint = () => {
+    setRouteForm({
+      ...routeForm,
+      points: [...routeForm.points, { lat: 0, lng: 0, name: "" }],
+    });
+  };
+
+  const updateRoutePoint = (
+    index: number,
+    field: keyof RoutePoint,
+    value: string | number
+  ) => {
+    const updatedPoints = [...routeForm.points];
+    updatedPoints[index] = { ...updatedPoints[index], [field]: value };
+    setRouteForm({ ...routeForm, points: updatedPoints });
+  };
+
+  const removeRoutePoint = (index: number) => {
+    const updatedPoints = routeForm.points.filter((_, i) => i !== index);
+    setRouteForm({ ...routeForm, points: updatedPoints });
   };
 
   if (!isAuthenticated) {
@@ -165,108 +364,547 @@ export default function AdminDashboard() {
               className="text-4xl font-bold mb-4 font-display"
               style={{ color: "#00274C" }}
             >
-              Registration Dashboard
+              Admin Dashboard
             </h1>
-            <div className="flex justify-between items-center">
-              <p className="text-lg text-gray-600 font-sans">
-                Total Registrations:{" "}
-                <span className="font-bold">{registrations.length}</span>
-              </p>
+
+            {/* Tab Navigation */}
+            <div className="flex space-x-1 mb-6">
               <button
-                onClick={exportToCSV}
-                disabled={exporting}
-                className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all hover:shadow-xl disabled:opacity-50"
-                style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                onClick={() => setActiveTab("registrations")}
+                className={`px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all ${
+                  activeTab === "registrations"
+                    ? "text-white"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+                style={
+                  activeTab === "registrations"
+                    ? { backgroundColor: "#00274C" }
+                    : { backgroundColor: "#e9ecef" }
+                }
               >
-                {exporting ? "Exporting..." : "Export to CSV"}
+                Registrations ({registrations.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("routes")}
+                className={`px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all ${
+                  activeTab === "routes"
+                    ? "text-white"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+                style={
+                  activeTab === "routes"
+                    ? { backgroundColor: "#00274C" }
+                    : { backgroundColor: "#e9ecef" }
+                }
+              >
+                Routes ({routes.length})
               </button>
             </div>
           </div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-lg text-gray-600 font-sans">
-                Loading registrations...
-              </p>
-            </div>
-          ) : error ? (
-            <div className="text-center py-12">
-              <p className="text-lg text-red-600 font-sans">{error}</p>
+          {error && (
+            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              {error}
               <button
-                onClick={fetchRegistrations}
-                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                onClick={() => setError(null)}
+                className="float-right text-red-500 hover:text-red-700 ml-4"
               >
-                Retry
+                ×
               </button>
             </div>
-          ) : registrations.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-lg text-gray-600 font-sans">
-                No registrations yet.
-              </p>
+          )}
+
+          {activeTab === "registrations" ? (
+            // Registrations Tab Content
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <p className="text-lg text-gray-600 font-sans">
+                  Total Registrations:{" "}
+                  <span className="font-bold">{registrations.length}</span>
+                </p>
+                <button
+                  onClick={exportToCSV}
+                  disabled={exporting}
+                  className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all hover:shadow-xl disabled:opacity-50"
+                  style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                >
+                  {exporting ? "Exporting..." : "Export to CSV"}
+                </button>
+              </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600 font-sans">
+                    Loading registrations...
+                  </p>
+                </div>
+              ) : registrations.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600 font-sans">
+                    No registrations yet.
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                      <thead style={{ backgroundColor: "#00274C" }}>
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Name
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Email
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Class Year
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Major
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Experience
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Medical
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {registrations.map((reg) => (
+                          <tr key={reg.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {new Date(reg.submittedAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {reg.firstName} {reg.lastName}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {reg.email}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
+                              {reg.grade}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {reg.major}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
+                              {reg.runningExperience}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {reg.medicalConditions || "None"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="min-w-full">
-                  <thead style={{ backgroundColor: "#00274C" }}>
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        Date
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        Name
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        Class Year
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        Major
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        Experience
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                        Medical
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {registrations.map((reg) => (
-                      <tr key={reg.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {new Date(reg.submittedAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {reg.firstName} {reg.lastName}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {reg.email}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-                          {reg.grade}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {reg.major}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-                          {reg.runningExperience}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {reg.medicalConditions || "None"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+            // Routes Tab Content
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <p className="text-lg text-gray-600 font-sans">
+                  Total Routes:{" "}
+                  <span className="font-bold">{routes.length}</span>
+                </p>
+                <button
+                  onClick={() => {
+                    setShowRouteForm(true);
+                    setEditingRoute(null);
+                    setRouteForm({
+                      name: "",
+                      description: "",
+                      distance: "",
+                      difficulty: "Easy",
+                      estimatedTime: "",
+                      points: [
+                        { lat: 42.278, lng: -83.7382, name: "Start Point" },
+                      ], // Add a default point
+                      isUpcoming: false,
+                    });
+                  }}
+                  className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all hover:shadow-xl"
+                  style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                >
+                  Add New Route
+                </button>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600 font-sans">
+                    Loading routes...
+                  </p>
+                </div>
+              ) : routes.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600 font-sans">
+                    No routes created yet. Create your first route!
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                      <thead style={{ backgroundColor: "#00274C" }}>
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Name
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Distance
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Difficulty
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {routes.map((route) => (
+                          <tr key={route.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-gray-900">
+                                  {route.name}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {route.description.substring(0, 60)}...
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {route.distance}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              <span
+                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  route.difficulty === "Easy"
+                                    ? "bg-green-100 text-green-800"
+                                    : route.difficulty === "Moderate"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
+                                }`}
+                              >
+                                {route.difficulty}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {route.isUpcoming ? (
+                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                  Upcoming
+                                </span>
+                              ) : (
+                                <span className="text-gray-500">Inactive</span>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={() => handleEditRoute(route)}
+                                  className="text-blue-600 hover:text-blue-900"
+                                >
+                                  Edit
+                                </button>
+                                {!route.isUpcoming && (
+                                  <button
+                                    onClick={() => handleSetUpcoming(route.id!)}
+                                    className="text-green-600 hover:text-green-900"
+                                  >
+                                    Set Upcoming
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleDeleteRoute(route.id!)}
+                                  className="text-red-600 hover:text-red-900"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
+
+      {/* Route Form Modal */}
+      {showRouteForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold" style={{ color: "#00274C" }}>
+                  {editingRoute ? "Edit Route" : "Add New Route"}
+                </h2>
+                <button
+                  onClick={() => setShowRouteForm(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handleRouteSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#00274C" }}
+                    >
+                      Route Name
+                    </label>
+                    <input
+                      type="text"
+                      value={routeForm.name}
+                      onChange={(e) =>
+                        setRouteForm({ ...routeForm, name: e.target.value })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#00274C" }}
+                    >
+                      Distance
+                    </label>
+                    <input
+                      type="text"
+                      value={routeForm.distance}
+                      onChange={(e) =>
+                        setRouteForm({ ...routeForm, distance: e.target.value })
+                      }
+                      placeholder="e.g., 5.0 miles"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#00274C" }}
+                    >
+                      Difficulty
+                    </label>
+                    <select
+                      value={routeForm.difficulty}
+                      onChange={(e) =>
+                        setRouteForm({
+                          ...routeForm,
+                          difficulty: e.target.value as
+                            | "Easy"
+                            | "Moderate"
+                            | "Hard",
+                        })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    >
+                      <option value="Easy">Easy</option>
+                      <option value="Moderate">Moderate</option>
+                      <option value="Hard">Hard</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#00274C" }}
+                    >
+                      Estimated Time
+                    </label>
+                    <input
+                      type="text"
+                      value={routeForm.estimatedTime}
+                      onChange={(e) =>
+                        setRouteForm({
+                          ...routeForm,
+                          estimatedTime: e.target.value,
+                        })
+                      }
+                      placeholder="e.g., 40-50 minutes"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    style={{ color: "#00274C" }}
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    value={routeForm.description}
+                    onChange={(e) =>
+                      setRouteForm({
+                        ...routeForm,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <label
+                      className="block text-sm font-semibold"
+                      style={{ color: "#00274C" }}
+                    >
+                      Route Points
+                    </label>
+                    <button
+                      type="button"
+                      onClick={addRoutePoint}
+                      className="px-4 py-2 text-sm font-semibold rounded-lg transition-all"
+                      style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                    >
+                      Add Point
+                    </button>
+                  </div>
+
+                  {routeForm.points.length === 0 ? (
+                    <p className="text-gray-500 text-sm">
+                      No route points added yet.
+                    </p>
+                  ) : (
+                    <div className="space-y-3 max-h-60 overflow-y-auto">
+                      {routeForm.points.map((point, index) => (
+                        <div
+                          key={index}
+                          className="grid grid-cols-4 gap-3 items-center p-3 bg-gray-50 rounded-lg"
+                        >
+                          <div>
+                            <input
+                              type="number"
+                              step="any"
+                              value={point.lat}
+                              onChange={(e) =>
+                                updateRoutePoint(
+                                  index,
+                                  "lat",
+                                  parseFloat(e.target.value) || 0
+                                )
+                              }
+                              placeholder="Latitude"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <input
+                              type="number"
+                              step="any"
+                              value={point.lng}
+                              onChange={(e) =>
+                                updateRoutePoint(
+                                  index,
+                                  "lng",
+                                  parseFloat(e.target.value) || 0
+                                )
+                              }
+                              placeholder="Longitude"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <input
+                              type="text"
+                              value={point.name || ""}
+                              onChange={(e) =>
+                                updateRoutePoint(index, "name", e.target.value)
+                              }
+                              placeholder="Point name (optional)"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                            />
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() => removeRoutePoint(index)}
+                              className="px-3 py-2 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50 transition-all"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="isUpcoming"
+                    checked={routeForm.isUpcoming}
+                    onChange={(e) =>
+                      setRouteForm({
+                        ...routeForm,
+                        isUpcoming: e.target.checked,
+                      })
+                    }
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="isUpcoming"
+                    className="ml-2 text-sm font-semibold"
+                    style={{ color: "#00274C" }}
+                  >
+                    Set as upcoming route
+                  </label>
+                </div>
+
+                <div className="flex justify-end space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowRouteForm(false)}
+                    className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all border border-gray-300 hover:bg-gray-50"
+                    style={{ color: "#00274C" }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all hover:shadow-xl"
+                    style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                  >
+                    {editingRoute ? "Update Route" : "Create Route"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
