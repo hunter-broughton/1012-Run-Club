@@ -221,7 +221,7 @@ export default function JoinPage() {
               WELCOME TO THE MOVEMENT!
             </h1>
             <p className="text-xl text-gray-200 mb-8 font-sans">
-              Thank you for your interest Hill Street Run Club! We'll review
+              Thank you for your interest in Hill Street Run Club! We&apos;ll review
               your info and get back to you soon!
             </p>
             <Link
@@ -253,7 +253,7 @@ export default function JoinPage() {
               JOIN THE MOVEMENT
             </h1>
             <p className="text-xl text-gray-200 font-sans mb-4">
-              Ready to run and vibe with Michigan's undergraduate running
+              Ready to run and vibe with Michigan&apos;s undergraduate running
               community? Fill out the form below to get started!
             </p>
           </div>
@@ -686,7 +686,7 @@ export default function JoinPage() {
                     className="block text-sm font-semibold mb-2 font-sans"
                     style={{ color: "#00274C" }}
                   >
-                    Anything else you'd like us to know?
+                    Anything else you&apos;d like us to know?
                   </label>
                   <textarea
                     name="additionalInfo"

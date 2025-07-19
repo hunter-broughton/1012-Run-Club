@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Remove static export settings for Vercel deployment
+  images: {
+    domains: [], // Add any external image domains you need
+  },
 };
 
 export default nextConfig;

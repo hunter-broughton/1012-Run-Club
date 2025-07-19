@@ -469,8 +469,8 @@ export default function Home() {
           </h2>
           <p className="text-xl text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed font-sans">
             Connect with fellow Wolverines, push your limits, and discover what
-            you're truly capable of achieving. Whether you're training for your
-            first 5K or your next personal record, we're here to support you
+            you&apos;re truly capable of achieving. Whether you&apos;re training for your
+            first 5K or your next personal record, we&apos;re here to support you
             every step of the way.
           </p>
           <Link

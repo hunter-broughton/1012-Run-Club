@@ -35,7 +35,6 @@ export default function GoogleRouteMap({
   height = "400px",
   title = "Running Route",
   distance,
-  difficulty,
 }: RouteMapProps) {
   console.log("GoogleRouteMap component rendering with props:", {
     center,
@@ -235,7 +234,7 @@ export default function GoogleRouteMap({
 
     // Small delay to ensure DOM is ready
     setTimeout(initMap, 100);
-  }, [center, zoom]);
+  }, [center, zoom, initializeMap]);
 
   // Cleanup effect
   useEffect(() => {
