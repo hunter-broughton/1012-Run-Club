@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { loadGoogleMaps } from "@/utils/googleMapsLoader";
+import { Loader } from "@googlemaps/js-api-loader";
 
 // Declare global google namespace for TypeScript
 declare global {
@@ -25,6 +25,8 @@ interface RouteMapProps {
   distance?: string;
   difficulty?: string;
 }
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export default function GoogleRouteMap({
   routePoints,
@@ -59,14 +61,22 @@ export default function GoogleRouteMap({
       return;
     }
 
+    if (!GOOGLE_MAPS_API_KEY) {
+      setError("Google Maps API key is not configured");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       console.log("Loading Google Maps...");
 
-      const loaded = await loadGoogleMaps();
-      if (!loaded) {
-        throw new Error("Failed to load Google Maps");
-      }
+      const loader = new Loader({
+        apiKey: GOOGLE_MAPS_API_KEY,
+        version: "weekly",
+        libraries: ["geometry"],
+      });
 
+      await loader.load();
       console.log("Google Maps loaded successfully");
 
       const mapOptions: google.maps.MapOptions = {

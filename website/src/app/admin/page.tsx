@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
-import InteractiveRouteMap from "@/components/InteractiveRouteMap";
 
 interface Registration {
   id: number;
@@ -322,6 +321,36 @@ export default function AdminDashboard() {
     const [movedPoint] = updatedPoints.splice(fromIndex, 1);
     updatedPoints.splice(toIndex, 0, movedPoint);
     setRouteForm({ ...routeForm, points: updatedPoints });
+  };
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    // Prevent drag if the target is an input or textarea
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      e.preventDefault();
+      return;
+    }
+    e.dataTransfer.setData("text/plain", index.toString());
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    const dragIndex = parseInt(e.dataTransfer.getData("text/plain"));
+    if (dragIndex !== dropIndex) {
+      moveRoutePoint(dragIndex, dropIndex);
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    // Prevent drag initiation when clicking on input fields
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      e.stopPropagation();
+    }
   };
 
   if (!isAuthenticated) {
@@ -801,181 +830,139 @@ export default function AdminDashboard() {
                       className="block text-sm font-semibold"
                       style={{ color: "#00274C" }}
                     >
-                      Route Points - Interactive Map
+                      Route Points
                     </label>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setRouteForm({ ...routeForm, points: [] })
-                        }
-                        className="px-4 py-2 text-sm font-semibold rounded-lg transition-all border border-red-300 text-red-600 hover:bg-red-50"
-                      >
-                        Clear All Points
-                      </button>
-                      <button
-                        type="button"
-                        onClick={addRoutePoint}
-                        className="px-4 py-2 text-sm font-semibold rounded-lg transition-all"
-                        style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
-                      >
-                        Add Manual Point
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={addRoutePoint}
+                      className="px-4 py-2 text-sm font-semibold rounded-lg transition-all"
+                      style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                    >
+                      Add Point
+                    </button>
                   </div>
 
-                  <InteractiveRouteMap
-                    points={routeForm.points}
-                    onPointsChange={(newPoints) =>
-                      setRouteForm({ ...routeForm, points: newPoints })
-                    }
-                    center={{ lat: 42.278, lng: -83.7382 }}
-                    zoom={13}
-                  />
-
-                  {/* Manual coordinate entry section - collapsible */}
-                  {routeForm.points.some(
-                    (point) => point.lat === 0 || point.lng === 0
-                  ) && (
-                    <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <h4 className="text-sm font-semibold text-yellow-800 mb-3">
-                        Manual Coordinate Entry
-                      </h4>
-                      <p className="text-sm text-yellow-700 mb-3">
-                        Some points need coordinates. You can enter them
-                        manually below or click on the map to set them.
-                      </p>
-                      <div className="space-y-3 max-h-60 overflow-y-auto">
-                        {routeForm.points.map((point, index) => {
-                          if (point.lat !== 0 && point.lng !== 0) return null;
-
-                          return (
-                            <div
-                              key={index}
-                              className="grid grid-cols-6 gap-3 items-center p-3 bg-white rounded-lg border"
+                  {routeForm.points.length === 0 ? (
+                    <p className="text-gray-500 text-sm">
+                      No route points added yet.
+                    </p>
+                  ) : (
+                    <div className="space-y-3 max-h-60 overflow-y-auto">
+                      {routeForm.points.map((point, index) => (
+                        <div
+                          key={index}
+                          className="grid grid-cols-6 gap-3 items-center p-3 bg-gray-50 rounded-lg border-2 border-transparent hover:border-blue-200 transition-all"
+                        >
+                          <div 
+                            className="flex items-center justify-center text-gray-500 cursor-move hover:text-blue-600 transition-colors"
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, index)}
+                            onDragOver={handleDragOver}
+                            onDrop={(e) => handleDrop(e, index)}
+                            title="Drag to reorder"
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
                             >
-                              <div className="flex items-center justify-center text-gray-500">
-                                <span className="text-sm font-medium">
-                                  #{index + 1}
-                                </span>
-                              </div>
-                              <div>
-                                <input
-                                  type="number"
-                                  step="any"
-                                  value={point.lat === 0 ? "" : point.lat}
-                                  onChange={(e) =>
-                                    updateRoutePoint(
-                                      index,
-                                      "lat",
-                                      e.target.value === ""
-                                        ? 0
-                                        : parseFloat(e.target.value) || 0
-                                    )
-                                  }
-                                  onFocus={(e) => e.target.select()}
-                                  placeholder="Latitude"
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                                  required
-                                />
-                              </div>
-                              <div>
-                                <input
-                                  type="number"
-                                  step="any"
-                                  value={point.lng === 0 ? "" : point.lng}
-                                  onChange={(e) =>
-                                    updateRoutePoint(
-                                      index,
-                                      "lng",
-                                      e.target.value === ""
-                                        ? 0
-                                        : parseFloat(e.target.value) || 0
-                                    )
-                                  }
-                                  onFocus={(e) => e.target.select()}
-                                  placeholder="Longitude"
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                                  required
-                                />
-                              </div>
-                              <div>
-                                <input
-                                  type="text"
-                                  value={point.name || ""}
-                                  onChange={(e) =>
-                                    updateRoutePoint(
-                                      index,
-                                      "name",
-                                      e.target.value
-                                    )
-                                  }
-                                  placeholder="Point name"
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
-                                />
-                              </div>
-                              <div className="flex gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (index > 0)
-                                      moveRoutePoint(index, index - 1);
-                                  }}
-                                  disabled={index === 0}
-                                  className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                  title="Move up"
-                                >
-                                  ↑
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    if (index < routeForm.points.length - 1)
-                                      moveRoutePoint(index, index + 1);
-                                  }}
-                                  disabled={
-                                    index === routeForm.points.length - 1
-                                  }
-                                  className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                  title="Move down"
-                                >
-                                  ↓
-                                </button>
-                              </div>
-                              <div>
-                                <button
-                                  type="button"
-                                  onClick={() => removeRoutePoint(index)}
-                                  className="px-3 py-2 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50 transition-all"
-                                >
-                                  Remove
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Route points summary */}
-                  {routeForm.points.length > 0 && (
-                    <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <h4 className="text-sm font-semibold text-blue-800 mb-2">
-                        Route Summary ({routeForm.points.length} points)
-                      </h4>
-                      <div className="text-sm text-blue-700 space-y-1">
-                        {routeForm.points.map((point, index) => (
-                          <div key={index} className="flex justify-between">
-                            <span>
-                              {index + 1}. {point.name || `Point ${index + 1}`}
-                            </span>
-                            <span className="text-xs">
-                              {point.lat.toFixed(4)}, {point.lng.toFixed(4)}
+                              <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+                            </svg>
+                            <span className="ml-1 text-sm font-medium">
+                              #{index + 1}
                             </span>
                           </div>
-                        ))}
-                      </div>
+                          <div>
+                            <input
+                              type="number"
+                              step="any"
+                              value={point.lat === 0 ? "" : point.lat}
+                              onChange={(e) =>
+                                updateRoutePoint(
+                                  index,
+                                  "lat",
+                                  e.target.value === ""
+                                    ? 0
+                                    : parseFloat(e.target.value) || 0
+                                )
+                              }
+                              onFocus={(e) => e.target.select()}
+                              onMouseDown={handleMouseDown}
+                              placeholder="Latitude"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <input
+                              type="number"
+                              step="any"
+                              value={point.lng === 0 ? "" : point.lng}
+                              onChange={(e) =>
+                                updateRoutePoint(
+                                  index,
+                                  "lng",
+                                  e.target.value === ""
+                                    ? 0
+                                    : parseFloat(e.target.value) || 0
+                                )
+                              }
+                              onFocus={(e) => e.target.select()}
+                              onMouseDown={handleMouseDown}
+                              placeholder="Longitude"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <input
+                              type="text"
+                              value={point.name || ""}
+                              onChange={(e) =>
+                                updateRoutePoint(index, "name", e.target.value)
+                              }
+                              onMouseDown={handleMouseDown}
+                              placeholder="Point name (optional)"
+                              className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (index > 0) moveRoutePoint(index, index - 1);
+                              }}
+                              disabled={index === 0}
+                              className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Move up"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (index < routeForm.points.length - 1)
+                                  moveRoutePoint(index, index + 1);
+                              }}
+                              disabled={index === routeForm.points.length - 1}
+                              className="px-2 py-1 text-xs text-blue-600 hover:text-blue-800 border border-blue-300 rounded hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                              title="Move down"
+                            >
+                              ↓
+                            </button>
+                          </div>
+                          <div>
+                            <button
+                              type="button"
+                              onClick={() => removeRoutePoint(index)}
+                              className="px-3 py-2 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50 transition-all"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
