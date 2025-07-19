@@ -24,9 +24,22 @@ interface RunRoute {
   isUpcoming?: boolean;
 }
 
+interface Event {
+  id: number;
+  badge: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  isActive: boolean;
+  sortOrder: number;
+}
+
 export default function Home() {
   const [upcomingRoute, setUpcomingRoute] = useState<RunRoute | null>(null);
   const [loadingRoute, setLoadingRoute] = useState(true);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
 
   useEffect(() => {
     const fetchUpcomingRoute = async () => {
@@ -45,7 +58,24 @@ export default function Home() {
       }
     };
 
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events");
+        if (response.ok) {
+          const eventsData = await response.json();
+          setEvents(eventsData);
+        } else {
+          console.error("Failed to fetch events");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
+
     fetchUpcomingRoute();
+    fetchEvents();
   }, []);
   return (
     <>
@@ -149,7 +179,7 @@ export default function Home() {
       </section>
 
       {/* What We Do Section */}
-      <section className="py-20 bg-white">
+      <section id="what-we-do" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="mb-16">
             <h2
@@ -178,7 +208,11 @@ export default function Home() {
       </section>
 
       {/* People Section */}
-      <section className="py-20" style={{ backgroundColor: "#00274C" }}>
+      <section
+        id="team"
+        className="py-20"
+        style={{ backgroundColor: "#00274C" }}
+      >
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2
@@ -225,7 +259,9 @@ export default function Home() {
               >
                 WILL ENDRES
               </h3>
-              <p className="text-gray-300 font-athletic text-lg">President & Founder</p>
+              <p className="text-gray-300 font-athletic text-lg">
+                President & Founder
+              </p>
             </div>
 
             {/* Team Member 2 */}
@@ -302,7 +338,7 @@ export default function Home() {
       </section>
 
       {/* Next Run Section */}
-      <section id="events" className="py-20 bg-white">
+      <section id="next-run" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-8">
             <h2
@@ -382,7 +418,11 @@ export default function Home() {
       </section>
 
       {/* Event Cards Section */}
-      <section className="py-20" style={{ backgroundColor: "#00274C" }}>
+      <section
+        id="schedule"
+        className="py-20"
+        style={{ backgroundColor: "#00274C" }}
+      >
         <div className="max-w-6xl mx-auto px-6">
           <div className="mb-16 text-center">
             <h2
@@ -394,27 +434,26 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <EventCard
-              badge="WEEKLY"
-              title="Wednesday Group Run"
-              description="Our signature 5-mile group run with multiple pace groups for all fitness levels."
-              date="Every Wednesday, 6:00 PM"
-              location="Ann Arbor - Meet at TBD"
-            />
-            <EventCard
-              badge="WEEKEND"
-              title="Saturday Long Run"
-              description="Build endurance with our weekend long runs, perfect for marathon training."
-              date="Every Saturday, 7:00 AM"
-              location="Ann Arbor - Meet at TBD"
-            />
-            <EventCard
-              badge="MONTHLY"
-              title="Social Run & Coffee"
-              description="Easy-paced social run followed by coffee. Great for newcomers to meet the group."
-              date="First Sunday of each month"
-              location="Ann Arbor - Meet at TBD"
-            />
+            {loadingEvents ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-300 text-lg">Loading events...</p>
+              </div>
+            ) : events.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-300 text-lg">No events scheduled</p>
+              </div>
+            ) : (
+              events.map((event) => (
+                <EventCard
+                  key={event.id}
+                  badge={event.badge}
+                  title={event.title}
+                  description={event.description}
+                  date={event.date}
+                  location={event.location}
+                />
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -470,7 +509,10 @@ export default function Home() {
               </div>
               <p className="text-gray-400 leading-relaxed font-sans">
                 Building a stronger Ann Arbor community, one step at a time.
-                Proud to represent the maize and blue with every mile we run.
+                Wanna join us? Follow us on instagram and{" "}
+                <Link href="/join" className="text-blue-500 hover:underline">
+                  sign up today!
+                </Link>
               </p>
             </div>
 
@@ -532,16 +574,10 @@ export default function Home() {
                   Email Us
                 </a>
                 <a
-                  href="#"
+                  href="https://www.instagram.com/hillstrunclub/"
                   className="block text-gray-400 hover:text-white transition-colors font-sans"
                 >
                   Instagram
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-400 hover:text-white transition-colors font-sans"
-                >
-                  Facebook
                 </a>
               </div>
             </div>

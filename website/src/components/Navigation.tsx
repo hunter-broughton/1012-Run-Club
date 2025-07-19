@@ -49,22 +49,28 @@ export default function Navigation() {
               ABOUT
             </Link>
             <Link
-              href={getNavHref("events")}
+              href={getNavHref("team")}
               className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
             >
-              EVENTS
+              TEAM
+            </Link>
+            <Link
+              href={getNavHref("next-run")}
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
+            >
+              NEXT RUN
+            </Link>
+            <Link
+              href={getNavHref("schedule")}
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
+            >
+              SCHEDULE
             </Link>
             <Link
               href={getNavHref("join")}
               className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
             >
               JOIN
-            </Link>
-            <Link
-              href={getNavHref("contact")}
-              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
-            >
-              CONTACT
             </Link>
           </div>
 
@@ -109,11 +115,25 @@ export default function Navigation() {
                 ABOUT
               </Link>
               <Link
-                href={getNavHref("events")}
+                href={getNavHref("team")}
                 className="text-white hover:text-[#FFCB05] transition-colors font-medium font-sans text-lg tracking-wide py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                EVENTS
+                TEAM
+              </Link>
+              <Link
+                href={getNavHref("next-run")}
+                className="text-white hover:text-[#FFCB05] transition-colors font-medium font-sans text-lg tracking-wide py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                NEXT RUN
+              </Link>
+              <Link
+                href={getNavHref("schedule")}
+                className="text-white hover:text-[#FFCB05] transition-colors font-medium font-sans text-lg tracking-wide py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                SCHEDULE
               </Link>
               <Link
                 href={getNavHref("join")}

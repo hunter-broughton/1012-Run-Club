@@ -218,7 +218,7 @@ export default function JoinPage() {
               className="text-4xl md:text-6xl font-bold mb-8 font-display"
               style={{ color: "#FFCB05" }}
             >
-              WELCOME TO THE PACK!
+              WELCOME TO THE MOVEMENT!
             </h1>
             <p className="text-xl text-gray-200 mb-8 font-sans">
               Thank you for your interest Hill Street Run Club! We'll review
@@ -731,7 +731,7 @@ export default function JoinPage() {
                 }`}
                 style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
               >
-                {isSubmitting ? "SUBMITTING..." : "JOIN THE PACK"}
+                {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
               </button>
             </div>
           </form>

@@ -43,19 +43,35 @@ interface RunRoute {
   updatedAt?: string;
 }
 
+interface Event {
+  id?: number;
+  badge: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  isActive?: boolean;
+  sortOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export default function AdminDashboard() {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [routes, setRoutes] = useState<RunRoute[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"registrations" | "routes">(
-    "registrations"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "registrations" | "routes" | "events"
+  >("registrations");
   const [showRouteForm, setShowRouteForm] = useState(false);
+  const [showEventForm, setShowEventForm] = useState(false);
   const [editingRoute, setEditingRoute] = useState<RunRoute | null>(null);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [routeForm, setRouteForm] = useState<
     Omit<RunRoute, "id" | "createdAt" | "updatedAt">
   >({
@@ -66,6 +82,18 @@ export default function AdminDashboard() {
     estimatedTime: "",
     points: [],
     isUpcoming: false,
+  });
+
+  const [eventForm, setEventForm] = useState<
+    Omit<Event, "id" | "createdAt" | "updatedAt">
+  >({
+    badge: "",
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    isActive: true,
+    sortOrder: 0,
   });
 
   // Simple password protection (in production, use proper authentication)
@@ -85,6 +113,7 @@ export default function AdminDashboard() {
         setIsAuthenticated(true);
         fetchRegistrations();
         fetchRoutes();
+        fetchEvents();
         setError(null);
       } else {
         const result = await response.json();
@@ -164,6 +193,20 @@ export default function AdminDashboard() {
       setRoutes(routesData);
     } catch (err) {
       setError("Failed to load routes");
+      console.error(err);
+    }
+  };
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("/api/events");
+      if (!response.ok) {
+        throw new Error("Failed to fetch events");
+      }
+      const eventsData = await response.json();
+      setEvents(eventsData);
+    } catch (err) {
+      setError("Failed to load events");
       console.error(err);
     }
   };
@@ -294,6 +337,88 @@ export default function AdminDashboard() {
     setShowRouteForm(true);
   };
 
+  // Event management functions
+  const handleEventSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const method = editingEvent ? "PUT" : "POST";
+      const url = editingEvent
+        ? `/api/events?id=${editingEvent.id}`
+        : "/api/events";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventForm),
+      });
+
+      if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(
+          responseData.error ||
+            `Failed to ${editingEvent ? "update" : "create"} event`
+        );
+      }
+
+      await fetchEvents();
+      setShowEventForm(false);
+      setEditingEvent(null);
+      setEventForm({
+        badge: "",
+        title: "",
+        description: "",
+        date: "",
+        location: "",
+        isActive: true,
+        sortOrder: 0,
+      });
+      setError(null);
+    } catch (err) {
+      console.error("Event submit error:", err);
+      setError(
+        `Failed to ${editingEvent ? "update" : "create"} event: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    }
+  };
+
+  const handleDeleteEvent = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      const response = await fetch(`/api/events?id=${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete event");
+      }
+
+      await fetchEvents();
+    } catch (err) {
+      setError("Failed to delete event");
+      console.error(err);
+    }
+  };
+
+  const handleEditEvent = (event: Event) => {
+    setEditingEvent(event);
+    setEventForm({
+      badge: event.badge,
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      location: event.location,
+      isActive: event.isActive || true,
+      sortOrder: event.sortOrder || 0,
+    });
+    setShowEventForm(true);
+  };
+
   const addRoutePoint = () => {
     setRouteForm({
       ...routeForm,
@@ -325,7 +450,10 @@ export default function AdminDashboard() {
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     // Prevent drag if the target is an input or textarea
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
       e.preventDefault();
       return;
     }
@@ -348,7 +476,10 @@ export default function AdminDashboard() {
 
   const handleMouseDown = (e: React.MouseEvent) => {
     // Prevent drag initiation when clicking on input fields
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+    if (
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
       e.stopPropagation();
     }
   };
@@ -450,6 +581,21 @@ export default function AdminDashboard() {
                 }
               >
                 Routes ({routes.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("events")}
+                className={`px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all ${
+                  activeTab === "events"
+                    ? "text-white"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+                style={
+                  activeTab === "events"
+                    ? { backgroundColor: "#00274C" }
+                    : { backgroundColor: "#e9ecef" }
+                }
+              >
+                Events ({events.length})
               </button>
             </div>
           </div>
@@ -557,7 +703,7 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
-          ) : (
+          ) : activeTab === "routes" ? (
             // Routes Tab Content
             <div>
               <div className="flex justify-between items-center mb-6">
@@ -693,7 +839,143 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
-          )}
+          ) : activeTab === "events" ? (
+            // Events Tab Content
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <p className="text-lg text-gray-600 font-sans">
+                  Total Events:{" "}
+                  <span className="font-bold">{events.length}</span>
+                </p>
+                <button
+                  onClick={() => {
+                    setShowEventForm(true);
+                    setEditingEvent(null);
+                    setEventForm({
+                      badge: "",
+                      title: "",
+                      description: "",
+                      date: "",
+                      location: "",
+                      isActive: true,
+                      sortOrder: events.length + 1,
+                    });
+                  }}
+                  className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all hover:shadow-xl"
+                  style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                >
+                  Add New Event
+                </button>
+              </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600 font-sans">
+                    Loading events...
+                  </p>
+                </div>
+              ) : events.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-lg text-gray-600 font-sans">
+                    No events created yet. Create your first event!
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg shadow-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                      <thead style={{ backgroundColor: "#00274C" }}>
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Badge
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Title
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Date
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Location
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {events.map((event) => (
+                          <tr key={event.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              <span
+                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  event.badge === "WEEKLY"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : event.badge === "WEEKEND"
+                                    ? "bg-green-100 text-green-800"
+                                    : event.badge === "MONTHLY"
+                                    ? "bg-purple-100 text-purple-800"
+                                    : "bg-gray-100 text-gray-800"
+                                }`}
+                              >
+                                {event.badge}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-gray-900">
+                                  {event.title}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  {event.description.substring(0, 60)}...
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {event.date}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {event.location}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {event.isActive ? (
+                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                  Active
+                                </span>
+                              ) : (
+                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                                  Inactive
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              <div className="flex space-x-2">
+                                <button
+                                  onClick={() => handleEditEvent(event)}
+                                  className="text-blue-600 hover:text-blue-900"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteEvent(event.id!)}
+                                  className="text-red-600 hover:text-red-900"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -853,7 +1135,7 @@ export default function AdminDashboard() {
                           key={index}
                           className="grid grid-cols-6 gap-3 items-center p-3 bg-gray-50 rounded-lg border-2 border-transparent hover:border-blue-200 transition-all"
                         >
-                          <div 
+                          <div
                             className="flex items-center justify-center text-gray-500 cursor-move hover:text-blue-600 transition-colors"
                             draggable
                             onDragStart={(e) => handleDragStart(e, index)}
@@ -1004,6 +1286,192 @@ export default function AdminDashboard() {
                     style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
                   >
                     {editingRoute ? "Update Route" : "Create Route"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Event Form Modal */}
+      {showEventForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold" style={{ color: "#00274C" }}>
+                  {editingEvent ? "Edit Event" : "Add New Event"}
+                </h2>
+                <button
+                  onClick={() => setShowEventForm(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <form onSubmit={handleEventSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#00274C" }}
+                    >
+                      Badge
+                    </label>
+                    <select
+                      value={eventForm.badge}
+                      onChange={(e) =>
+                        setEventForm({ ...eventForm, badge: e.target.value })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    >
+                      <option value="">Select Badge</option>
+                      <option value="WEEKLY">WEEKLY</option>
+                      <option value="WEEKEND">WEEKEND</option>
+                      <option value="MONTHLY">MONTHLY</option>
+                      <option value="SPECIAL">SPECIAL</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      className="block text-sm font-semibold mb-2"
+                      style={{ color: "#00274C" }}
+                    >
+                      Sort Order
+                    </label>
+                    <input
+                      type="number"
+                      value={eventForm.sortOrder}
+                      onChange={(e) =>
+                        setEventForm({
+                          ...eventForm,
+                          sortOrder: parseInt(e.target.value) || 0,
+                        })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      min="0"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    style={{ color: "#00274C" }}
+                  >
+                    Event Title
+                  </label>
+                  <input
+                    type="text"
+                    value={eventForm.title}
+                    onChange={(e) =>
+                      setEventForm({ ...eventForm, title: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    style={{ color: "#00274C" }}
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    value={eventForm.description}
+                    onChange={(e) =>
+                      setEventForm({
+                        ...eventForm,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    style={{ color: "#00274C" }}
+                  >
+                    Date & Time
+                  </label>
+                  <input
+                    type="text"
+                    value={eventForm.date}
+                    onChange={(e) =>
+                      setEventForm({ ...eventForm, date: e.target.value })
+                    }
+                    placeholder="e.g., Every Wednesday, 6:00 PM"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    className="block text-sm font-semibold mb-2"
+                    style={{ color: "#00274C" }}
+                  >
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    value={eventForm.location}
+                    onChange={(e) =>
+                      setEventForm({ ...eventForm, location: e.target.value })
+                    }
+                    placeholder="e.g., Ann Arbor - Meet at TBD"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="isActive"
+                    checked={eventForm.isActive}
+                    onChange={(e) =>
+                      setEventForm({
+                        ...eventForm,
+                        isActive: e.target.checked,
+                      })
+                    }
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor="isActive"
+                    className="ml-2 text-sm font-semibold"
+                    style={{ color: "#00274C" }}
+                  >
+                    Active (show on website)
+                  </label>
+                </div>
+
+                <div className="flex justify-end space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowEventForm(false)}
+                    className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all border border-gray-300 hover:bg-gray-50"
+                    style={{ color: "#00274C" }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 text-lg font-semibold font-sans rounded-lg transition-all hover:shadow-xl"
+                    style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+                  >
+                    {editingEvent ? "Update Event" : "Create Event"}
                   </button>
                 </div>
               </form>
