@@ -17,9 +17,8 @@ interface RoutePoint {
 interface RunRoute {
   id?: number;
   name: string;
-  description: string;
+  description?: string;
   distance: string;
-  difficulty: "Easy" | "Moderate" | "Hard";
   estimatedTime: string;
   points: RoutePoint[];
   isUpcoming?: boolean;
@@ -62,7 +61,7 @@ export default function Home() {
           {/* Main Heading */}
           <div className="text-center mb-16">
             <h1
-              className="text-6xl md:text-9xl font-display tracking-wider mb-8 text-glow-maize animate-text-pulse"
+              className="text-6xl md:text-9xl font-display tracking-wider mb-8"
               style={{ color: "#FFCB05" }}
             >
               ABOUT US
@@ -82,20 +81,22 @@ export default function Home() {
 
           {/* Big House Hero Image */}
           <div className="mb-20 -mx-6">
-            <Image
-              src="/um big house.jpg"
-              alt="University of Michigan Big House Stadium"
-              width={1200}
-              height={400}
-              className="object-cover w-full h-64 md:h-96 rounded-lg shadow-2xl"
-              priority
-            />
+            <div className="big-house-container mx-auto max-w-6xl">
+              <Image
+                src="/um big house.jpg"
+                alt="University of Michigan Big House Stadium"
+                width={1200}
+                height={400}
+                className="big-house-image object-cover w-full h-64 md:h-96"
+                priority
+              />
+            </div>
           </div>
 
           {/* Our Story */}
           <div className="mb-20">
             <h2
-              className="text-5xl md:text-7xl font-display tracking-wider mb-8 text-glow-maize"
+              className="text-5xl md:text-7xl font-display tracking-wider mb-8"
               style={{ color: "#FFCB05" }}
             >
               OUR STORY
@@ -125,7 +126,7 @@ export default function Home() {
                   Street Run Club is the place for you.{" "}
                   <Link
                     href="/join"
-                    className="font-impact font-bold underline hover:no-underline transition-all text-glow-maize"
+                    className="font-impact font-bold underline hover:no-underline transition-all"
                     style={{ color: "#FFCB05" }}
                   >
                     SIGN UP TODAY!
@@ -152,7 +153,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="mb-16">
             <h2
-              className="text-4xl md:text-5xl font-bold mb-8 font-display tracking-tight"
+              className="text-6xl md:text-8xl font-bold mb-8 font-display tracking-tight"
               style={{ color: "#00274C" }}
             >
               WHAT WE DO
@@ -161,135 +162,235 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-12">
             <FeatureCard
-              title="TRAINING"
-              description="We provide structured training programs and group runs for all fitness levels, from beginners to competitive runners looking to achieve personal records."
+              title="RUNS"
+              description="Our runs are upbeat, energetic group outings on and off campus, featuring pace groups, challenges, and music that keeps every runner moving."
             />
             <FeatureCard
               title="COMMUNITY"
-              description="We create lasting connections through regular social events, team challenges, and a supportive network of fellow Wolverines who share your passion for running."
+              description="We create lasting connections through regular social events, invigorating cold-plunges, mutual motivation, and celebrating every victory—big or small—together."
             />
             <FeatureCard
-              title="COMPETITION"
-              description="We organize race teams and provide opportunities to represent Hill Street Run Club at local races, marathons, and university competitions throughout the year."
+              title="PHILANTROPY"
+              description="We partner with local nonprofits, host charity runs and volunteer days, and support Ann Arbor initiatives that promote community health, education, and well-being."
             />
           </div>
         </div>
       </section>
 
-      {/* Events Section */}
-      <section
-        id="events"
-        className="py-20"
-        style={{ backgroundColor: "#00274C" }}
-      >
+      {/* People Section */}
+      <section className="py-20" style={{ backgroundColor: "#00274C" }}>
         <div className="max-w-6xl mx-auto px-6">
-          <div className="mb-16">
+          <div className="text-center mb-16">
             <h2
-              className="text-4xl md:text-5xl font-bold mb-8 font-display tracking-tight"
+              className="text-6xl md:text-8xl font-bold mb-8 font-display tracking-tight"
               style={{ color: "#FFCB05" }}
             >
-              UPCOMING EVENTS
+              OUR TEAM
             </h2>
+            <div className="relative mb-8">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-64 h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent"></div>
+              </div>
+              <p className="text-gray-200 max-w-4xl mx-auto font-athletic text-3xl leading-relaxed bg-[#00274C] px-8 relative z-10 text-center">
+                <span
+                  className="text-5xl md:text-6xl font-display tracking-wider block mb-4"
+                  style={{ color: "#FFCB05" }}
+                >
+                  2025-2026
+                </span>
+                <span className="text-2xl md:text-3xl italic">
+                  Founding Leadership
+                </span>
+              </p>
+            </div>
           </div>
 
-          {/* Featured Event with Image */}
-          <div className="mb-12 text-center">
-            <Image
-              src="/big house 5k.webp"
-              alt="Big House 5K Race Event"
-              width={600}
-              height={300}
-              className="object-cover rounded-lg shadow-xl mx-auto mb-6"
-            />
-            <h3
-              className="text-3xl md:text-4xl font-display tracking-wider mb-4 text-glow-maize"
-              style={{ color: "#FFCB05" }}
-            >
-              FEATURED EVENT: BIG HOUSE 5K
-            </h3>
-            <p className="text-gray-200 max-w-2xl mx-auto font-athletic text-xl leading-relaxed">
-              Join us for our signature Big House 5K run around Michigan&apos;s
-              iconic stadium. A perfect blend of Michigan pride and athletic
-              achievement!
-            </p>
-          </div>
-
-          {/* Live Route Map Section */}
-          <div className="mb-16">
-            <div className="text-center mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            {/* Team Member 1 */}
+            <div className="text-center">
+              <div className="mb-6 relative">
+                <div className="w-48 h-48 mx-auto rounded-full overflow-hidden bg-gray-300 relative">
+                  <Image
+                    src="/will_photo.jpeg"
+                    alt="Will Endres"
+                    width={192}
+                    height={192}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
               <h3
-                className="text-4xl md:text-6xl font-display tracking-wider mb-4 text-glow-maize"
+                className="text-2xl md:text-3xl font-display tracking-wide mb-2"
                 style={{ color: "#FFCB05" }}
               >
-                NEXT RUN ROUTE
+                WILL ENDRES
               </h3>
-              <p className="text-gray-200 max-w-2xl mx-auto font-athletic text-xl">
-                Check out the route for our upcoming group run! Follow the blue
-                path and meet us at the start point.
+              <p className="text-gray-300 font-athletic text-lg">President & Founder</p>
+            </div>
+
+            {/* Team Member 2 */}
+            <div className="text-center">
+              <div className="mb-6 relative">
+                <div className="w-48 h-48 mx-auto rounded-full overflow-hidden bg-gray-300 relative">
+                  <Image
+                    src="/hubbard_photo.png"
+                    alt="Jack Hubbard"
+                    width={192}
+                    height={192}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+              <h3
+                className="text-2xl md:text-3xl font-display tracking-wide mb-2"
+                style={{ color: "#FFCB05" }}
+              >
+                JACK HUBBARD
+              </h3>
+              <p className="text-gray-300 font-athletic text-lg">
+                Vice President
               </p>
             </div>
 
-            <div className="max-w-4xl mx-auto">
-              {loadingRoute ? (
-                <div className="text-center py-12">
-                  <p className="text-gray-200 text-lg">Loading route...</p>
-                </div>
-              ) : upcomingRoute ? (
-                <>
-                  <GoogleRouteMap
-                    routePoints={upcomingRoute.points}
-                    center={[
-                      upcomingRoute.points[0].lat,
-                      upcomingRoute.points[0].lng,
-                    ]}
-                    zoom={14}
-                    height="500px"
-                    title={upcomingRoute.name}
-                    distance={upcomingRoute.distance}
-                    difficulty={upcomingRoute.difficulty}
+            {/* Team Member 3 */}
+            <div className="text-center">
+              <div className="mb-6 relative">
+                <div className="w-48 h-48 mx-auto rounded-full overflow-hidden bg-gray-300 relative">
+                  <Image
+                    src="/luka_photo.png"
+                    alt="Luka Kampinga"
+                    width={192}
+                    height={192}
+                    className="w-full h-full object-cover"
                   />
+                </div>
+              </div>
+              <h3
+                className="text-2xl md:text-3xl font-display tracking-wide mb-2"
+                style={{ color: "#FFCB05" }}
+              >
+                LUKA KAMPINGA
+              </h3>
+              <p className="text-gray-300 font-athletic text-lg">Treasurer</p>
+            </div>
 
-                  {/* Route Details */}
-                  <div className="mt-6 p-6 bg-gray-800 rounded-lg">
-                    <h4
-                      className="text-xl font-bold mb-3"
-                      style={{ color: "#FFCB05" }}
-                    >
-                      {upcomingRoute.name}
-                    </h4>
-                    <p className="text-gray-200 mb-4 leading-relaxed">
-                      {upcomingRoute.description}
-                    </p>
-                    <div className="grid md:grid-cols-3 gap-4 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Distance:</span>
-                        <span className="text-white font-semibold">
-                          {upcomingRoute.distance}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Difficulty:</span>
-                        <span className="text-white font-semibold">
-                          {upcomingRoute.difficulty}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Est. Time:</span>
-                        <span className="text-white font-semibold">
-                          {upcomingRoute.estimatedTime}
-                        </span>
-                      </div>
+            {/* Team Member 4 */}
+            <div className="text-center">
+              <div className="mb-6 relative">
+                <div className="w-48 h-48 mx-auto rounded-full overflow-hidden bg-gray-300 relative">
+                  <Image
+                    src="/hunter_photo.jpeg"
+                    alt="Hunter Broughton"
+                    width={192}
+                    height={192}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+              <h3
+                className="text-2xl md:text-3xl font-display tracking-wide mb-2"
+                style={{ color: "#FFCB05" }}
+              >
+                HUNTER BROUGHTON
+              </h3>
+              <p className="text-gray-300 font-athletic text-lg">
+                Membership and Communications
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Next Run Section */}
+      <section id="events" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-8">
+            <h2
+              className="text-6xl md:text-8xl font-display tracking-wider mb-4"
+              style={{ color: "#00274C" }}
+            >
+              NEXT RUN
+            </h2>
+            <p className="text-gray-700 max-w-2xl mx-auto font-athletic text-xl">
+              Check out the route for our upcoming group run! Follow the blue
+              path and meet us at the start point.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            {loadingRoute ? (
+              <div className="text-center py-12">
+                <p className="text-gray-700 text-lg">Loading route...</p>
+              </div>
+            ) : upcomingRoute ? (
+              <>
+                <GoogleRouteMap
+                  routePoints={upcomingRoute.points}
+                  center={[
+                    upcomingRoute.points[0].lat,
+                    upcomingRoute.points[0].lng,
+                  ]}
+                  zoom={14}
+                  height="500px"
+                  title={upcomingRoute.name}
+                  distance={upcomingRoute.distance}
+                />
+
+                {/* Route Details */}
+                <div
+                  className="mt-6 p-6 bg-gray-100 rounded-lg border-2"
+                  style={{ borderColor: "#FFCB05" }}
+                >
+                  <h4
+                    className="text-2xl md:text-3xl font-bold mb-4"
+                    style={{ color: "#00274C" }}
+                  >
+                    {upcomingRoute.name}
+                  </h4>
+                  <p className="text-gray-700 mb-6 leading-relaxed text-lg md:text-xl">
+                    {upcomingRoute.description}
+                  </p>
+                  <div className="grid md:grid-cols-2 gap-6 text-lg md:text-xl">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-semibold">
+                        Distance:
+                      </span>
+                      <span className="text-gray-800 font-bold">
+                        {upcomingRoute.distance}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-semibold">
+                        Est. Time:
+                      </span>
+                      <span className="text-gray-800 font-bold">
+                        {upcomingRoute.estimatedTime}
+                      </span>
                     </div>
                   </div>
-                </>
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-gray-200 text-lg">
-                    No upcoming route available
-                  </p>
                 </div>
-              )}
-            </div>
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-700 text-lg">
+                  No upcoming route available
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Event Cards Section */}
+      <section className="py-20" style={{ backgroundColor: "#00274C" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="mb-16 text-center">
+            <h2
+              className="text-5xl md:text-6xl font-bold mb-8 font-display tracking-tight"
+              style={{ color: "#FFCB05" }}
+            >
+              WEEKLY SCHEDULE
+            </h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -322,7 +423,7 @@ export default function Home() {
       <section id="join" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2
-            className="text-4xl md:text-5xl font-bold mb-8 font-display tracking-tight"
+            className="text-6xl md:text-8xl font-bold mb-8 font-display tracking-tight"
             style={{ color: "#00274C" }}
           >
             READY TO JOIN?

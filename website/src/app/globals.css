@@ -83,25 +83,39 @@ h1 {
 }
 
 /* Text effects for energy */
-.text-glow-maize {
-  text-shadow: 0 0 10px rgba(255, 203, 5, 0.5), 0 0 20px rgba(255, 203, 5, 0.3);
-}
-
 .text-glow-blue {
   text-shadow: 0 0 10px rgba(0, 39, 76, 0.5), 0 0 20px rgba(0, 39, 76, 0.3);
 }
 
-/* Energetic animations */
-.text-pulse {
-  animation: textPulse 2s ease-in-out infinite alternate;
+/* Big House Image 3D Effect */
+.big-house-container {
+  position: relative;
+  border-radius: 12px;
+  padding: 12px;
+  background: transparent;
+  transition: background 0.5s ease;
 }
 
-@keyframes textPulse {
-  from {
-    text-shadow: 0 0 5px rgba(255, 203, 5, 0.5);
-  }
-  to {
-    text-shadow: 0 0 15px rgba(255, 203, 5, 0.8),
-      0 0 25px rgba(255, 203, 5, 0.4);
-  }
+.big-house-container:hover {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 203, 5, 0.4) 0%,
+    rgba(255, 203, 5, 0.2) 40%,
+    rgba(255, 203, 5, 0.1) 70%,
+    transparent 100%
+  );
+}
+
+.big-house-image {
+  position: relative;
+  z-index: 1;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.5s ease;
+}
+
+.big-house-container:hover .big-house-image {
+  box-shadow: 0 20px 40px rgba(255, 203, 5, 0.25),
+    0 12px 25px rgba(255, 203, 5, 0.15), 0 6px 15px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 203, 5, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }

@@ -34,7 +34,7 @@ export default function Navigation() {
               className="object-contain"
             />
             <span
-              className="text-2xl md:text-3xl font-display tracking-wider text-glow-maize"
+              className="text-2xl md:text-3xl font-display tracking-wider"
               style={{ color: "#FFCB05" }}
             >
               HILL STREET RUN CLUB
@@ -44,25 +44,25 @@ export default function Navigation() {
           <div className="hidden md:flex items-center space-x-12">
             <Link
               href={getNavHref("about")}
-              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider hover:text-glow-maize"
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
             >
               ABOUT
             </Link>
             <Link
               href={getNavHref("events")}
-              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider hover:text-glow-maize"
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
             >
               EVENTS
             </Link>
             <Link
               href={getNavHref("join")}
-              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider hover:text-glow-maize"
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
             >
               JOIN
             </Link>
             <Link
               href={getNavHref("contact")}
-              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider hover:text-glow-maize"
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
             >
               CONTACT
             </Link>

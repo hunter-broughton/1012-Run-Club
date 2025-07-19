@@ -45,20 +45,6 @@ module.exports = {
           900: "#996600",
         },
       },
-      animation: {
-        "text-pulse": "textPulse 2s ease-in-out infinite alternate",
-      },
-      keyframes: {
-        textPulse: {
-          from: {
-            textShadow: "0 0 5px rgba(255, 203, 5, 0.5)",
-          },
-          to: {
-            textShadow:
-              "0 0 15px rgba(255, 203, 5, 0.8), 0 0 25px rgba(255, 203, 5, 0.4)",
-          },
-        },
-      },
     },
   },
   plugins: [],
