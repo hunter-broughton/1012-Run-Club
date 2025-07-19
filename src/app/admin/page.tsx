@@ -10,10 +10,6 @@ interface Registration {
   email: string;
   phone: string;
   grade: string;
-  major: string;
-  runningExperience: string;
-  fitnessLevel: string;
-  goals: string;
   emergencyContact: string;
   emergencyPhone: string;
   medicalConditions: string;
@@ -661,12 +657,6 @@ export default function AdminDashboard() {
                             Class Year
                           </th>
                           <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                            Major
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
-                            Experience
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
                             Medical
                           </th>
                         </tr>
@@ -685,12 +675,6 @@ export default function AdminDashboard() {
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
                               {reg.grade}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                              {reg.major}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">
-                              {reg.runningExperience}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                               {reg.medicalConditions || "None"}

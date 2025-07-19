@@ -44,23 +44,6 @@ const validateRegistrationData = (
   if (!data.grade || typeof data.grade !== "string" || !data.grade.trim()) {
     errors.push("Class year is required");
   }
-  if (!data.major || typeof data.major !== "string" || !data.major.trim()) {
-    errors.push("Major/field of study is required");
-  }
-  if (
-    !data.runningExperience ||
-    typeof data.runningExperience !== "string" ||
-    !data.runningExperience.trim()
-  ) {
-    errors.push("Running experience is required");
-  }
-  if (
-    !data.fitnessLevel ||
-    typeof data.fitnessLevel !== "string" ||
-    !data.fitnessLevel.trim()
-  ) {
-    errors.push("Fitness level is required");
-  }
   if (
     !data.emergencyContact ||
     typeof data.emergencyContact !== "string" ||
@@ -146,10 +129,6 @@ export async function POST(request: NextRequest) {
       phone: data.phone.trim(),
       isUMUndergrad: data.isUMUndergrad,
       grade: data.grade,
-      major: data.major.trim(),
-      runningExperience: data.runningExperience,
-      fitnessLevel: data.fitnessLevel,
-      goals: data.goals?.trim() || "",
       emergencyContact: data.emergencyContact.trim(),
       emergencyPhone: data.emergencyPhone.trim(),
       medicalConditions: data.medicalConditions?.trim() || "",

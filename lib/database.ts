@@ -41,10 +41,6 @@ export const initializeDatabase = () => {
           phone TEXT NOT NULL,
           isUMUndergrad BOOLEAN NOT NULL,
           grade TEXT NOT NULL,
-          major TEXT NOT NULL,
-          runningExperience TEXT NOT NULL,
-          fitnessLevel TEXT NOT NULL,
-          goals TEXT,
           emergencyContact TEXT NOT NULL,
           emergencyPhone TEXT NOT NULL,
           medicalConditions TEXT,
@@ -99,10 +95,6 @@ export interface RegistrationData {
   phone: string;
   isUMUndergrad: boolean;
   grade: string;
-  major: string;
-  runningExperience: string;
-  fitnessLevel: string;
-  goals?: string;
   emergencyContact: string;
   emergencyPhone: string;
   medicalConditions?: string;
@@ -120,10 +112,6 @@ interface RegistrationRecord {
   phone: string;
   isUMUndergrad: number;
   grade: string;
-  major: string;
-  runningExperience: string;
-  fitnessLevel: string;
-  goals: string;
   emergencyContact: string;
   emergencyPhone: string;
   medicalConditions: string;
@@ -145,10 +133,10 @@ export const insertRegistration = (data: RegistrationData): Promise<number> => {
   return new Promise((resolve, reject) => {
     const sql = `
       INSERT INTO registrations (
-        firstName, lastName, email, phone, isUMUndergrad, grade, major,
-        runningExperience, fitnessLevel, goals, emergencyContact, emergencyPhone,
-        medicalConditions, availability, hearAboutUs, additionalInfo, ipAddress
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        firstName, lastName, email, phone, isUMUndergrad, grade,
+        emergencyContact, emergencyPhone, medicalConditions, availability, 
+        hearAboutUs, additionalInfo, ipAddress
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -158,10 +146,6 @@ export const insertRegistration = (data: RegistrationData): Promise<number> => {
       data.phone,
       data.isUMUndergrad ? 1 : 0,
       data.grade,
-      data.major,
-      data.runningExperience,
-      data.fitnessLevel,
-      data.goals || "",
       data.emergencyContact,
       data.emergencyPhone,
       data.medicalConditions || "",
@@ -204,28 +188,6 @@ export const getAllRegistrations = (): Promise<ProcessedRegistration[]> => {
     );
   });
 };
-
-interface RegistrationRecord {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  isUMUndergrad: number;
-  grade: string;
-  major: string;
-  runningExperience: string;
-  fitnessLevel: string;
-  goals: string;
-  emergencyContact: string;
-  emergencyPhone: string;
-  medicalConditions: string;
-  availability: string;
-  hearAboutUs: string;
-  additionalInfo: string;
-  submittedAt: string;
-  ipAddress: string;
-}
 
 // Check if email already exists
 export const emailExists = (email: string): Promise<boolean> => {

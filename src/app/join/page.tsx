@@ -13,10 +13,6 @@ export default function JoinPage() {
     phone: "",
     isUMUndergrad: false,
     grade: "",
-    major: "",
-    runningExperience: "",
-    fitnessLevel: "",
-    goals: "",
     emergencyContact: "",
     emergencyPhone: "",
     medicalConditions: "",
@@ -55,15 +51,6 @@ export default function JoinPage() {
     }
     if (!formData.grade) {
       newErrors.grade = "Class year is required";
-    }
-    if (!formData.major.trim()) {
-      newErrors.major = "Major/field of study is required";
-    }
-    if (!formData.runningExperience) {
-      newErrors.runningExperience = "Running experience is required";
-    }
-    if (!formData.fitnessLevel) {
-      newErrors.fitnessLevel = "Fitness level is required";
     }
     if (!formData.emergencyContact.trim()) {
       newErrors.emergencyContact = "Emergency contact name is required";
@@ -221,8 +208,8 @@ export default function JoinPage() {
               WELCOME TO THE MOVEMENT!
             </h1>
             <p className="text-xl text-gray-200 mb-8 font-sans">
-              Thank you for your interest in Hill Street Run Club! We&apos;ll review
-              your info and get back to you soon!
+              Thank you for your interest in Hill Street Run Club! We&apos;ll
+              review your info and get back to you soon!
             </p>
             <Link
               href="/"
@@ -253,8 +240,8 @@ export default function JoinPage() {
               JOIN THE MOVEMENT
             </h1>
             <p className="text-xl text-gray-200 font-sans mb-4">
-              Ready to run and vibe with Michigan&apos;s undergraduate running
-              community? Fill out the form below to get started!
+              Ready to run with Hill St. Run Club? Fill out the form below to
+              get started!
             </p>
           </div>
 
@@ -407,144 +394,33 @@ export default function JoinPage() {
                   </p>
                 )}
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
-                  >
-                    Class Year *
-                  </label>
-                  <select
-                    name="grade"
-                    value={formData.grade}
-                    onChange={handleInputChange}
-                    required
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
-                      errors.grade ? "border-red-500" : "border-gray-300"
-                    }`}
-                  >
-                    <option value="">Select your class year...</option>
-                    <option value="freshman">Freshman</option>
-                    <option value="sophomore">Sophomore</option>
-                    <option value="junior">Junior</option>
-                    <option value="senior">Senior</option>
-                  </select>
-                  {errors.grade && (
-                    <p className="text-red-600 text-sm mt-1 font-sans">
-                      {errors.grade}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
-                  >
-                    Major/Field of Study *
-                  </label>
-                  <input
-                    type="text"
-                    name="major"
-                    value={formData.major}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="e.g., Computer Science, Engineering, etc."
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
-                      errors.major ? "border-red-500" : "border-gray-300"
-                    }`}
-                  />
-                  {errors.major && (
-                    <p className="text-red-600 text-sm mt-1 font-sans">
-                      {errors.major}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Running Background */}
-            <div className="mb-8">
-              <h2
-                className="text-2xl font-bold mb-6 font-display"
-                style={{ color: "#00274C" }}
-              >
-                Running Background
-              </h2>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
-                  >
-                    Running Experience *
-                  </label>
-                  <select
-                    name="runningExperience"
-                    value={formData.runningExperience}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans"
-                  >
-                    <option value="">Select...</option>
-                    <option value="beginner">
-                      Beginner (just starting out)
-                    </option>
-                    <option value="casual">
-                      Casual runner (1-2 times/week)
-                    </option>
-                    <option value="regular">
-                      Regular runner (3-4 times/week)
-                    </option>
-                    <option value="competitive">
-                      Competitive runner (5+ times/week)
-                    </option>
-                    <option value="former-athlete">
-                      Former competitive athlete
-                    </option>
-                  </select>
-                </div>
-                <div>
-                  <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
-                  >
-                    Current Fitness Level *
-                  </label>
-                  <select
-                    name="fitnessLevel"
-                    value={formData.fitnessLevel}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans"
-                  >
-                    <option value="">Select...</option>
-                    <option value="low">Low - Building basic fitness</option>
-                    <option value="moderate">
-                      Moderate - Can run 2-3 miles
-                    </option>
-                    <option value="good">Good - Can run 5+ miles</option>
-                    <option value="excellent">
-                      Excellent - Can run 10+ miles
-                    </option>
-                  </select>
-                </div>
-                <div className="md:col-span-2">
-                  <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
-                  >
-                    Running Goals
-                  </label>
-                  <textarea
-                    name="goals"
-                    value={formData.goals}
-                    onChange={handleInputChange}
-                    rows={3}
-                    placeholder="What are you hoping to achieve? (e.g., complete a 5K, improve speed, make friends, etc.)"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans"
-                  />
-                </div>
+              <div>
+                <label
+                  className="block text-sm font-semibold mb-2 font-sans"
+                  style={{ color: "#00274C" }}
+                >
+                  Class Year *
+                </label>
+                <select
+                  name="grade"
+                  value={formData.grade}
+                  onChange={handleInputChange}
+                  required
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
+                    errors.grade ? "border-red-500" : "border-gray-300"
+                  }`}
+                >
+                  <option value="">Select your class year...</option>
+                  <option value="freshman">Freshman</option>
+                  <option value="sophomore">Sophomore</option>
+                  <option value="junior">Junior</option>
+                  <option value="senior">Senior</option>
+                </select>
+                {errors.grade && (
+                  <p className="text-red-600 text-sm mt-1 font-sans">
+                    {errors.grade}
+                  </p>
+                )}
               </div>
             </div>
 

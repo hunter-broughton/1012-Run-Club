@@ -4,8 +4,8 @@
     {
       "label": "Start Dev Server",
       "type": "shell",
-      "command": "cd website && npm run dev",
-      "group": "serve",
+      "command": "npm run dev",
+      "group": "build",
       "isBackground": true,
       "problemMatcher": []
     }
