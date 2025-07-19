@@ -1,10 +1,4 @@
 {
   "version": 2,
-  "name": "hill-street-run-club",
-  "framework": "nextjs",
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  "framework": "nextjs"
 }
