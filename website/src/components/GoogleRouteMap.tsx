@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader } from "@googlemaps/js-api-loader";
+import { loadGoogleMaps } from "@/utils/googleMapsLoader";
 
 // Declare global google namespace for TypeScript
 declare global {
@@ -25,8 +25,6 @@ interface RouteMapProps {
   distance?: string;
   difficulty?: string;
 }
-
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 export default function GoogleRouteMap({
   routePoints,
@@ -61,22 +59,14 @@ export default function GoogleRouteMap({
       return;
     }
 
-    if (!GOOGLE_MAPS_API_KEY) {
-      setError("Google Maps API key is not configured");
-      setIsLoading(false);
-      return;
-    }
-
     try {
       console.log("Loading Google Maps...");
 
-      const loader = new Loader({
-        apiKey: GOOGLE_MAPS_API_KEY,
-        version: "weekly",
-        libraries: ["geometry"],
-      });
+      const loaded = await loadGoogleMaps();
+      if (!loaded) {
+        throw new Error("Failed to load Google Maps");
+      }
 
-      await loader.load();
       console.log("Google Maps loaded successfully");
 
       const mapOptions: google.maps.MapOptions = {
@@ -272,46 +262,19 @@ export default function GoogleRouteMap({
     <div className="w-full">
       {/* Route Info Header */}
       <div className="mb-4 p-4 bg-white rounded-lg shadow-md">
-        <h3 className="text-xl font-bold mb-2" style={{ color: "#00274C" }}>
+        <h3
+          className="text-3xl md:text-4xl font-bold mb-4"
+          style={{ color: "#00274C" }}
+        >
           {title}
         </h3>
-        <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+        <div className="flex flex-wrap gap-4 text-xl md:text-2xl text-gray-600">
           {distance && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <span className="font-semibold">Distance:</span>
               <span>{distance}</span>
             </div>
           )}
-          {difficulty && (
-            <div className="flex items-center gap-1">
-              <span className="font-semibold">Difficulty:</span>
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  difficulty.toLowerCase() === "easy"
-                    ? "bg-green-100 text-green-800"
-                    : difficulty.toLowerCase() === "moderate"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                {difficulty}
-              </span>
-            </div>
-          )}
-          <div className="flex items-center gap-1">
-            <span className="font-semibold">Route Type:</span>
-            <span>
-              {routePoints.length > 1 &&
-              Math.abs(
-                routePoints[0].lat - routePoints[routePoints.length - 1].lat
-              ) < 0.001 &&
-              Math.abs(
-                routePoints[0].lng - routePoints[routePoints.length - 1].lng
-              ) < 0.001
-                ? "Loop"
-                : "Point to Point"}
-            </span>
-          </div>
         </div>
       </div>
 
