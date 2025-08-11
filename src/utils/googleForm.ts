@@ -12,10 +12,14 @@ export interface GoogleFormConfig {
   };
 }
 
+// Resolve form URL from env (preferred) and ensure it targets formResponse (no /u/0)
+const envFormUrl =
+  process.env.GOOGLE_FORM_URL?.replace("viewform", "formResponse") ??
+  "https://docs.google.com/forms/d/e/1FAIpQLSfNFyyMVezqwl1o3RzH_iDuoWVcTW6J10K9crXDLA2AGlEylg/formResponse";
+
 // Default configuration - updated with your actual Google Form details
 export const defaultGoogleFormConfig: GoogleFormConfig = {
-  formUrl:
-    "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfNFyyMVezqwl1o3RzH_iDuoWVcTW6J10K9crXDLA2AGlEylg/formResponse",
+  formUrl: envFormUrl,
   fields: {
     firstName: "entry.1579531420",
     lastName: "entry.1730873985",
@@ -54,20 +58,23 @@ export const createGoogleFormData = (
   // Map only the fields that actually exist in your Google Form
   formData.append(config.fields.firstName, data.firstName as string);
   formData.append(config.fields.lastName, data.lastName as string);
+
+  // Email: append mapped entry field. Also append emailAddress for forms with collection enabled.
   formData.append(config.fields.email, data.email as string);
+  formData.append("emailAddress", (data.email as string) ?? "");
+
   formData.append(config.fields.phone, data.phone as string);
 
   // For Class Year - your form has this field
   formData.append(config.fields.grade, data.grade as string);
 
-  // Handle availability - if it's an array, join with commas, otherwise use as string
-  if (data.availability) {
-    if (Array.isArray(data.availability)) {
-      // Join multiple selections with commas for Google Forms
-      formData.append(config.fields.availability, data.availability.join(", "));
-    } else {
-      formData.append(config.fields.availability, data.availability as string);
-    }
+  // Handle availability checkboxes: append each selection separately
+  if (Array.isArray(data.availability)) {
+    (data.availability as string[]).forEach((day) => {
+      formData.append(config.fields.availability, day);
+    });
+  } else if (typeof data.availability === "string" && data.availability) {
+    formData.append(config.fields.availability, data.availability);
   }
 
   // How did you hear about us
@@ -99,8 +106,6 @@ export const submitToGoogleForm = async (
       mode: "no-cors", // Important for Google Forms
     });
 
-    // With no-cors mode, we can't read the response, so we assume success
-    // if no error was thrown
     console.log("Google Form submission completed");
     return { success: true };
   } catch (error) {

@@ -136,7 +136,8 @@ export async function addRoute(
   route: Omit<RunRoute, "id" | "createdAt" | "updatedAt">
 ): Promise<number> {
   const routes = await getAllRoutes();
-  const newId = routes.length > 0 ? Math.max(...routes.map((r) => r.id)) + 1 : 1;
+  const newId =
+    routes.length > 0 ? Math.max(...routes.map((r) => r.id)) + 1 : 1;
   const timestamp = new Date().toISOString();
 
   const newRoute: RunRoute = {
@@ -233,7 +234,8 @@ export async function addEvent(
   event: Omit<Event, "id" | "createdAt" | "updatedAt">
 ): Promise<number> {
   const events = await getAllEvents();
-  const newId = events.length > 0 ? Math.max(...events.map((e) => e.id)) + 1 : 1;
+  const newId =
+    events.length > 0 ? Math.max(...events.map((e) => e.id)) + 1 : 1;
   const timestamp = new Date().toISOString();
 
   const newEvent: Event = {
