@@ -13,6 +13,8 @@
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
     "@types/google.maps": "^3.58.1",
+    "@upstash/redis": "^1.35.3",
+    "@vercel/kv": "^3.0.0",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

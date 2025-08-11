@@ -19,7 +19,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching events:", error);
 
-    // Fallback: Return static default events if file system fails
+    // Fallback: Return static default events if store fails
     const fallbackEvents = [
       {
         id: 1,
