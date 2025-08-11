@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 
 // Declare global google namespace for TypeScript
@@ -49,7 +49,7 @@ export default function GoogleRouteMap({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const initializeMap = async () => {
+  const initializeMap = useCallback(async () => {
     if (!mapElementRef.current) {
       console.log("Map element not found");
       return;
@@ -215,7 +215,7 @@ export default function GoogleRouteMap({
       );
       setIsLoading(false);
     }
-  };
+  }, [center, zoom, routePoints]);
 
   useEffect(() => {
     console.log("useEffect running, checking for map element...");
