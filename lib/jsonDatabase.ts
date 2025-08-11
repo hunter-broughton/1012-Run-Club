@@ -197,7 +197,7 @@ export async function deleteEvent(id: number): Promise<void> {
 
 // Registration functions (for export functionality)
 // Since we're using Google Forms now, this returns empty array
-export async function getAllRegistrations(): Promise<any[]> {
+export async function getAllRegistrations(): Promise<unknown[]> {
   // Registrations are now handled by Google Forms
   // This function exists for compatibility but returns empty array
   return [];

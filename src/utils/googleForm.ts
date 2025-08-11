@@ -93,7 +93,7 @@ export const submitToGoogleForm = async (
       console.log(`  ${key}: ${value}`);
     }
 
-    const response = await fetch(config.formUrl, {
+    await fetch(config.formUrl, {
       method: "POST",
       body: formData,
       mode: "no-cors", // Important for Google Forms
