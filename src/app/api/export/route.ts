@@ -7,8 +7,10 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        message: "Registration data is now stored in Google Forms. Please export directly from your Google Form responses.",
-        redirectUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfNFyyMVezqwl1o3RzH_iDuoWVcTW6J10K9crXDLA2AGlEylg/edit#responses",
+        message:
+          "Registration data is now stored in Google Forms. Please export directly from your Google Form responses.",
+        redirectUrl:
+          "https://docs.google.com/forms/d/e/1FAIpQLSfNFyyMVezqwl1o3RzH_iDuoWVcTW6J10K9crXDLA2AGlEylg/edit#responses",
       },
       { status: 200 }
     );
@@ -35,7 +37,8 @@ export async function POST(request: NextRequest) {
         success: true,
         data: [],
         count: 0,
-        message: "Registration data is now stored in Google Forms. Please export directly from your Google Form responses.",
+        message:
+          "Registration data is now stored in Google Forms. Please export directly from your Google Form responses.",
       });
     }
 

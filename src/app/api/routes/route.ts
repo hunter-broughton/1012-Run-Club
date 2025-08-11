@@ -13,10 +13,29 @@ export async function GET() {
     return NextResponse.json(routes);
   } catch (error) {
     console.error("Error fetching routes:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch routes" },
-      { status: 500 }
-    );
+
+    // Fallback: Return static default route if file system fails (e.g., on Vercel)
+    const fallbackRoute = {
+      id: 1,
+      name: "Campus Loop",
+      description:
+        "A scenic 3-mile loop around the University of Michigan campus, perfect for beginners.",
+      distance: "3.0 miles",
+      difficulty: "Easy" as const,
+      estimatedTime: "25-30 minutes",
+      points: [
+        { lat: 42.2808, lng: -83.743, name: "Start: Diag" },
+        { lat: 42.2776, lng: -83.7382, name: "Michigan Union" },
+        { lat: 42.2737, lng: -83.7347, name: "Law School" },
+        { lat: 42.2769, lng: -83.7321, name: "Medical Campus" },
+        { lat: 42.2808, lng: -83.743, name: "End: Diag" },
+      ],
+      isUpcoming: true,
+      createdAt: "2025-08-10T00:00:00.000Z",
+      updatedAt: "2025-08-10T00:00:00.000Z",
+    };
+
+    return NextResponse.json([fallbackRoute]);
   }
 }
 
