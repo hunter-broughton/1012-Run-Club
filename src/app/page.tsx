@@ -469,9 +469,9 @@ export default function Home() {
           </h2>
           <p className="text-xl text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed font-sans">
             Connect with fellow Wolverines, push your limits, and discover what
-            you&apos;re truly capable of achieving. Whether you&apos;re training for your
-            first 5K or your next personal record, we&apos;re here to support you
-            every step of the way.
+            you&apos;re truly capable of achieving. Whether you&apos;re training
+            for your first 5K or your next personal record, we&apos;re here to
+            support you every step of the way.
           </p>
           <Link
             href="/join"
@@ -568,10 +568,10 @@ export default function Home() {
               </h4>
               <div className="space-y-2">
                 <a
-                  href="#"
+                  href="mailto:hillstrunclub@gmail.com"
                   className="block text-gray-400 hover:text-white transition-colors font-sans"
                 >
-                  Email Us
+                  Email
                 </a>
                 <a
                   href="https://www.instagram.com/hillstrunclub/"
