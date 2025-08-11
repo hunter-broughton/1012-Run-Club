@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUpcomingRoute } from "../../../../lib/database";
+import { getUpcomingRoute } from "../../../../lib/jsonDatabase";
 
 export async function GET() {
   try {

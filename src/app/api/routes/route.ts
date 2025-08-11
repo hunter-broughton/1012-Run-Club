@@ -5,7 +5,7 @@ import {
   updateRoute,
   deleteRoute,
   setUpcomingRoute,
-} from "../../../../lib/database";
+} from "../../../../lib/jsonDatabase";
 
 export async function GET() {
   try {
