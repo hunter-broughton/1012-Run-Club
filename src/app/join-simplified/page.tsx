@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 
-export default function JoinPage() {
+export default function JoinPageSimplified() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -105,7 +105,7 @@ export default function JoinPage() {
 
     try {
       // Submit to backend API (which will forward to Google Forms)
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/register-simplified", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
