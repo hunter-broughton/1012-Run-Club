@@ -347,7 +347,7 @@ export default function Home() {
               NEXT RUN
             </h2>
             <p className="text-gray-700 max-w-2xl mx-auto font-athletic text-xl">
-              Check out the route for our upcoming group run! Follow the blue
+              Check out the route for our upcoming group run! Follow the orange
               path and meet us at the start point.
             </p>
           </div>
