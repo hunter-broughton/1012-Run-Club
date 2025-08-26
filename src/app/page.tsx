@@ -6,7 +6,6 @@ import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import FeatureCard from "@/components/FeatureCard";
 import EventCard from "@/components/EventCard";
-import GoogleRouteMap from "@/components/GoogleRouteMap";
 
 interface RoutePoint {
   lat: number;
@@ -360,16 +359,14 @@ export default function Home() {
               </div>
             ) : upcomingRoute ? (
               <>
-                <GoogleRouteMap
-                  routePoints={upcomingRoute.points}
-                  center={[
-                    upcomingRoute.points[0].lat,
-                    upcomingRoute.points[0].lng,
-                  ]}
-                  zoom={14}
-                  height="500px"
-                  title={upcomingRoute.name}
-                  distance={upcomingRoute.distance}
+                {/* Replaced GoogleRouteMap with static image */}
+                <Image
+                  src="/route.jpeg"
+                  alt={upcomingRoute?.name ?? "Upcoming route"}
+                  width={1200}
+                  height={500}
+                  className="object-cover w-full h-auto rounded-lg"
+                  priority
                 />
 
                 {/* Route Details */}
