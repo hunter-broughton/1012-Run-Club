@@ -199,7 +199,7 @@ export default function Home() {
               description="We create lasting connections through regular social events, invigorating cold-plunges, mutual motivation, and celebrating every victory—big or small—together."
             />
             <FeatureCard
-              title="PHILANTROPY"
+              title="PHILANTHROPY"
               description="We partner with local nonprofits, host charity runs and volunteer days, and support Ann Arbor initiatives that promote community health, education, and well-being."
             />
           </div>
