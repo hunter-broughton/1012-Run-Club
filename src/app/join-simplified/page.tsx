@@ -178,7 +178,7 @@ export default function JoinPageSimplified() {
             >
               WELCOME TO THE MOVEMENT!
             </h1>
-            <p className="text-xl text-gray-200 mb-8 font-sans">
+            <p className="text-xl text-gray-200 dark:text-white mb-8 font-sans">
               Thank you for your interest in Hill Street Run Club! We&apos;ll
               review your info and get back to you soon!
             </p>
@@ -210,7 +210,7 @@ export default function JoinPageSimplified() {
             >
               JOIN THE MOVEMENT
             </h1>
-            <p className="text-xl text-gray-200 font-sans mb-4">
+            <p className="text-xl text-gray-200 dark:text-white font-sans mb-4">
               Ready to run with Hill St. Run Club? Fill out the form below to
               get started!
             </p>
@@ -218,21 +218,21 @@ export default function JoinPageSimplified() {
 
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-lg shadow-xl p-8"
+            className="bg-white dark:bg-gray-900 rounded-lg shadow-xl p-8"
           >
             {/* Personal Information */}
             <div className="mb-8">
               <h2
-                className="text-2xl font-bold mb-6 font-display"
-                style={{ color: "#00274C" }}
+                className="text-2xl font-bold mb-6 font-display text-gray-800 dark:text-white"
+                
               >
                 Personal Information
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
+                    className="block text-sm font-semibold mb-2 font-sans text-gray-800 dark:text-white"
+                    
                   >
                     First Name *
                   </label>
@@ -242,20 +242,20 @@ export default function JoinPageSimplified() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 ${
                       errors.firstName ? "border-red-500" : "border-gray-300"
                     }`}
                   />
                   {errors.firstName && (
-                    <p className="text-red-600 text-sm mt-1 font-sans">
+                    <p className="text-red-600 dark:text-red-400 text-sm mt-1 font-sans">
                       {errors.firstName}
                     </p>
                   )}
                 </div>
                 <div>
                   <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
+                    className="block text-sm font-semibold mb-2 font-sans text-gray-800 dark:text-white"
+                    
                   >
                     Last Name *
                   </label>
@@ -265,20 +265,20 @@ export default function JoinPageSimplified() {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 ${
                       errors.lastName ? "border-red-500" : "border-gray-300"
                     }`}
                   />
                   {errors.lastName && (
-                    <p className="text-red-600 text-sm mt-1 font-sans">
+                    <p className="text-red-600 dark:text-red-400 text-sm mt-1 font-sans">
                       {errors.lastName}
                     </p>
                   )}
                 </div>
                 <div>
                   <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
+                    className="block text-sm font-semibold mb-2 font-sans text-gray-800 dark:text-white"
+                    
                   >
                     Email Address (must be @umich.edu) *
                   </label>
@@ -289,20 +289,20 @@ export default function JoinPageSimplified() {
                     onChange={handleInputChange}
                     required
                     placeholder="your-uniqname@umich.edu"
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 ${
                       errors.email ? "border-red-500" : "border-gray-300"
                     }`}
                   />
                   {errors.email && (
-                    <p className="text-red-600 text-sm mt-1 font-sans">
+                    <p className="text-red-600 dark:text-red-400 text-sm mt-1 font-sans">
                       {errors.email}
                     </p>
                   )}
                 </div>
                 <div>
                   <label
-                    className="block text-sm font-semibold mb-2 font-sans"
-                    style={{ color: "#00274C" }}
+                    className="block text-sm font-semibold mb-2 font-sans text-gray-800 dark:text-white"
+                    
                   >
                     Phone Number *
                   </label>
@@ -312,12 +312,12 @@ export default function JoinPageSimplified() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 ${
                       errors.phone ? "border-red-500" : "border-gray-300"
                     }`}
                   />
                   {errors.phone && (
-                    <p className="text-red-600 text-sm mt-1 font-sans">
+                    <p className="text-red-600 dark:text-red-400 text-sm mt-1 font-sans">
                       {errors.phone}
                     </p>
                   )}
@@ -328,15 +328,15 @@ export default function JoinPageSimplified() {
             {/* Class Year */}
             <div className="mb-8">
               <h2
-                className="text-2xl font-bold mb-6 font-display"
-                style={{ color: "#00274C" }}
+                className="text-2xl font-bold mb-6 font-display text-gray-800 dark:text-white"
+                
               >
                 University Information
               </h2>
               <div>
                 <label
-                  className="block text-sm font-semibold mb-2 font-sans"
-                  style={{ color: "#00274C" }}
+                  className="block text-sm font-semibold mb-2 font-sans text-gray-800 dark:text-white"
+                  
                 >
                   Class Year *
                 </label>
@@ -345,7 +345,7 @@ export default function JoinPageSimplified() {
                   value={formData.grade}
                   onChange={handleInputChange}
                   required
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 ${
                     errors.grade ? "border-red-500" : "border-gray-300"
                   }`}
                 >
@@ -357,7 +357,7 @@ export default function JoinPageSimplified() {
                   <option value="Other">Other</option>
                 </select>
                 {errors.grade && (
-                  <p className="text-red-600 text-sm mt-1 font-sans">
+                  <p className="text-red-600 dark:text-red-400 text-sm mt-1 font-sans">
                     {errors.grade}
                   </p>
                 )}
@@ -367,14 +367,14 @@ export default function JoinPageSimplified() {
             {/* Availability */}
             <div className="mb-8">
               <h2
-                className="text-2xl font-bold mb-6 font-display"
-                style={{ color: "#00274C" }}
+                className="text-2xl font-bold mb-6 font-display text-gray-800 dark:text-white"
+                
               >
                 Availability
               </h2>
               <label
-                className="block text-sm font-semibold mb-4 font-sans"
-                style={{ color: "#00274C" }}
+                className="block text-sm font-semibold mb-4 font-sans text-gray-800 dark:text-white"
+                
               >
                 Which days can you typically join group runs? (Check all that
                 apply)
@@ -391,7 +391,7 @@ export default function JoinPageSimplified() {
                 ].map((day) => (
                   <label
                     key={day}
-                    className="flex items-center space-x-2 font-sans"
+                    className="flex items-center space-x-2 font-sans text-gray-800 dark:text-white"
                   >
                     <input
                       type="checkbox"
@@ -409,15 +409,15 @@ export default function JoinPageSimplified() {
             {/* How did you hear about us */}
             <div className="mb-8">
               <h2
-                className="text-2xl font-bold mb-6 font-display"
-                style={{ color: "#00274C" }}
+                className="text-2xl font-bold mb-6 font-display text-gray-800 dark:text-white"
+                
               >
                 Additional Information
               </h2>
               <div>
                 <label
-                  className="block text-sm font-semibold mb-2 font-sans"
-                  style={{ color: "#00274C" }}
+                  className="block text-sm font-semibold mb-2 font-sans text-gray-800 dark:text-white"
+                  
                 >
                   How did you hear about us?
                 </label>
@@ -425,7 +425,7 @@ export default function JoinPageSimplified() {
                   name="hearAboutUs"
                   value={formData.hearAboutUs}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-sans bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 >
                   <option value="">Select...</option>
                   <option value="Friend/Word of mouth">
@@ -444,18 +444,20 @@ export default function JoinPageSimplified() {
             <div className="text-center">
               {/* General error display */}
               {errors.general && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-700 font-sans">{errors.general}</p>
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
+                  <p className="text-red-700 dark:text-red-200 font-sans">
+                    {errors.general}
+                  </p>
                 </div>
               )}
 
               {/* Validation summary */}
               {Object.keys(errors).length > 0 && !errors.general && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-red-700 font-sans font-semibold mb-2">
+                <div className="mb-6 p-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
+                  <p className="text-red-700 dark:text-red-200 font-sans font-semibold mb-2">
                     Please fix the following errors:
                   </p>
-                  <ul className="text-red-600 font-sans text-sm list-disc list-inside">
+                  <ul className="text-red-600 dark:text-red-300 font-sans text-sm list-disc list-inside">
                     {Object.entries(errors).map(([field, message]) => (
                       <li key={field}>{message}</li>
                     ))}
