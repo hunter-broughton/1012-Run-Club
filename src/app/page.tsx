@@ -361,11 +361,11 @@ export default function Home() {
               <>
                 {/* Replaced GoogleRouteMap with static image */}
                 <Image
-                  src="/route.jpeg"
+                  src="/strava.png"
                   alt={upcomingRoute?.name ?? "Upcoming route"}
-                  width={1200}
-                  height={500}
-                  className="object-cover w-full h-auto rounded-lg"
+                  width={900}
+                  height={375}
+                  className="object-contain w-full max-w-3xl mx-auto h-auto max-h-[22.5rem] md:max-h-[27rem] lg:max-h-[30rem] rounded-lg"
                   priority
                 />
 
