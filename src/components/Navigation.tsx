@@ -61,6 +61,18 @@ export default function Navigation() {
               NEXT RUN
             </Link>
             <Link
+              href={getNavHref("merch")}
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
+            >
+              MERCH
+            </Link>
+            <Link
+              href={getNavHref("highlights")}
+              className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
+            >
+              HIGHLIGHTS
+            </Link>
+            <Link
               href={getNavHref("schedule")}
               className="text-white hover:text-[#FFCB05] transition-colors font-impact text-lg tracking-wider"
             >
@@ -127,6 +139,20 @@ export default function Navigation() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 NEXT RUN
+              </Link>
+              <Link
+                href={getNavHref("merch")}
+                className="text-white hover:text-[#FFCB05] transition-colors font-medium font-sans text-lg tracking-wide py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                MERCH
+              </Link>
+              <Link
+                href={getNavHref("highlights")}
+                className="text-white hover:text-[#FFCB05] transition-colors font-medium font-sans text-lg tracking-wide py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                HIGHLIGHTS
               </Link>
               <Link
                 href={getNavHref("schedule")}

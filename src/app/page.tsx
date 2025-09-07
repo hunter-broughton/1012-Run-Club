@@ -39,6 +39,16 @@ export default function Home() {
   const [loadingRoute, setLoadingRoute] = useState(true);
   const [events, setEvents] = useState<Event[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const highlightImages = [
+    { src: "/big-group.jpeg", alt: "Large Group Run" },
+    { src: "/dog.jpeg", alt: "Running with Four-Legged Friends" },
+    { src: "/people2.jpeg", alt: "Group Running Session" },
+    { src: "/people3.jpeg", alt: "Community Gathering" },
+    { src: "/running.JPG", alt: "Running Together" },
+    { src: "/ice_bath.jpeg", alt: "Post-Run Recovery Ice Bath" },
+  ];
 
   useEffect(() => {
     const fetchUpcomingRoute = async () => {
@@ -76,6 +86,25 @@ export default function Home() {
     fetchUpcomingRoute();
     fetchEvents();
   }, []);
+
+  // Slideshow auto-advance
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % highlightImages.length);
+    }, 4000); // Change slide every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [highlightImages.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % highlightImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(
+      (prev) => (prev - 1 + highlightImages.length) % highlightImages.length
+    );
+  };
   return (
     <>
       <Navigation />
@@ -410,6 +439,172 @@ export default function Home() {
                 </p>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Merch Section */}
+      <section
+        id="merch"
+        className="py-20"
+        style={{ backgroundColor: "#00274C" }}
+      >
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2
+            className="text-5xl md:text-7xl font-display tracking-wider mb-8"
+            style={{ color: "#FFCB05" }}
+          >
+            FALL 2025 MERCH
+          </h2>
+          <p className="text-gray-200 text-xl md:text-2xl font-athletic leading-relaxed mb-12 max-w-3xl mx-auto">
+            Show your Hill Street Run Club pride with our exclusive sweatshirts!
+            Perfect for cold Michigan runs, campus strolls, or just hanging out.
+          </p>
+
+          {/* Hoodies Image */}
+          <div className="mb-8">
+            <Image
+              src="/hoodies.jpeg"
+              alt="Hill Street Run Club Hoodies"
+              width={800}
+              height={600}
+              className="object-contain w-full max-w-2xl mx-auto h-auto rounded-lg shadow-lg"
+            />
+          </div>
+
+          <a
+            href="https://orders.couturebyikigai.com/?dropCode=hsrc-f25-2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-12 py-4 text-xl font-semibold font-sans rounded-lg transition-all hover:shadow-xl hover:scale-105"
+            style={{ backgroundColor: "#FFCB05", color: "#00274C" }}
+          >
+            ORDER YOUR SWEATSHIRT
+          </a>
+          <p className="text-gray-400 text-sm mt-4 font-athletic">
+            Opens in new window
+          </p>
+        </div>
+      </section>
+
+      {/* Highlights Section */}
+      <section id="highlights" className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h2
+            className="text-4xl md:text-5xl font-display tracking-wider mb-12"
+            style={{ color: "#00274C" }}
+          >
+            HIGHLIGHTS
+          </h2>
+
+          {/* Slideshow */}
+          <div className="relative max-w-4xl mx-auto mb-12">
+            <div className="overflow-hidden rounded-lg shadow-lg bg-gray-100">
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+              >
+                {highlightImages.map((image, index) => (
+                  <div key={index} className="w-full flex-shrink-0">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      width={800}
+                      height={500}
+                      className="w-full h-64 md:h-96 object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-75 transition-opacity"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+            <button
+              onClick={nextSlide}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-75 transition-opacity"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+
+            {/* Dots Indicator */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {highlightImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-colors ${
+                    index === currentSlide
+                      ? "bg-[#FFCB05]"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div
+                className="text-3xl md:text-4xl font-display mb-4"
+                style={{ color: "#FFCB05" }}
+              >
+                75+
+              </div>
+              <p className="text-gray-700 font-athletic text-lg">
+                Active Members
+              </p>
+            </div>
+            <div className="text-center">
+              <div
+                className="text-3xl md:text-4xl font-display mb-4"
+                style={{ color: "#FFCB05" }}
+              >
+                2
+              </div>
+              <p className="text-gray-700 font-athletic text-lg">Group Runs</p>
+            </div>
+            <div className="text-center">
+              <div
+                className="text-3xl md:text-4xl font-display mb-4"
+                style={{ color: "#FFCB05" }}
+              >
+                FOUNDED
+              </div>
+              <p className="text-gray-700 font-athletic text-lg">
+                2025 at U of M
+              </p>
+            </div>
           </div>
         </div>
       </section>
