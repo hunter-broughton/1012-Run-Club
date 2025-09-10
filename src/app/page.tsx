@@ -456,10 +456,19 @@ export default function Home() {
           >
             FALL 2025 MERCH
           </h2>
-          <p className="text-gray-200 text-xl md:text-2xl font-athletic leading-relaxed mb-12 max-w-3xl mx-auto">
-            Show your Hill Street Run Club pride with our exclusive sweatshirts!
-            Perfect for cold Michigan runs, campus strolls, or just hanging out.
-          </p>
+          <div className="text-gray-200 text-xl md:text-2xl font-athletic leading-relaxed mb-12 max-w-3xl mx-auto">
+            <p className="mb-4">
+              Show your Hill Street Run Club pride with our exclusive
+              sweatshirts!
+            </p>
+            <p className="mb-4">
+              Perfect for cold Michigan runs, campus strolls, or just hanging
+              out.
+            </p>
+            <p>
+              All proceeds support our club events and community initiatives.
+            </p>
+          </div>
 
           {/* Hoodies Image */}
           <div className="mb-8">
