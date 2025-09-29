@@ -482,7 +482,7 @@ export default function Home() {
           </div>
 
           <a
-            href="https://orders.couturebyikigai.com/?dropCode=hsrc-f25-2"
+            href="https://orders.couturebyikigai.com/?dropCode=hsrc-f25-2&bulk=false"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block px-12 py-4 text-xl font-semibold font-sans rounded-lg transition-all hover:shadow-xl hover:scale-105"
