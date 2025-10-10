@@ -599,7 +599,7 @@ export default function Home() {
                 className="text-3xl md:text-4xl font-display mb-4"
                 style={{ color: "#FFCB05" }}
               >
-                2
+                10+
               </div>
               <p className="text-gray-700 font-athletic text-lg">Group Runs</p>
             </div>
