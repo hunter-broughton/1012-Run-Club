@@ -390,7 +390,7 @@ export default function Home() {
               <>
                 {/* Replaced GoogleRouteMap with static image */}
                 <Image
-                  src="/route.jpeg"
+                  src="/strava.png"
                   alt={upcomingRoute?.name ?? "Upcoming route"}
                   width={900}
                   height={375}
